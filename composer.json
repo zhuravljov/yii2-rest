@@ -1,0 +1,21 @@
+{
+    "name": "zhuravljov/yii2-rest",
+    "description": "Yii2 REST Client",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension"],
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Roman Zhuravlev",
+            "email": "zhuravljov@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "zhuravljov\\yii\\rest\\": ""
+        }
+    }
+}
