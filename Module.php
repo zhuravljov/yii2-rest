@@ -2,14 +2,22 @@
 
 namespace zhuravljov\yii\rest;
 
-class Module extends \yii\base\Module
+use yii\base\BootstrapInterface;
+use yii\web\Application;
+
+class Module extends \yii\base\Module implements BootstrapInterface
 {
     public $controllerNamespace = 'zhuravljov\yii\rest\controllers';
 
-    public function init()
+    /**
+     * @inheritdoc
+     */
+    public function bootstrap($app)
     {
-        parent::init();
-
-        // custom initialization code goes here
+        if ($app instanceof Application) {
+            $app->getUrlManager()->addRules([
+                $this->id => $this->id . '/default/index',
+            ], false);
+        }
     }
 }
