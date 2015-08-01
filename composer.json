@@ -2,7 +2,7 @@
     "name": "zhuravljov/yii2-rest",
     "description": "Yii2 REST Client",
     "type": "yii2-extension",
-    "keywords": ["yii2","extension"],
+    "keywords": ["yii2", "rest client"],
     "license": "BSD-3-Clause",
     "authors": [
         {
@@ -11,7 +11,8 @@
         }
     ],
     "require": {
-        "yiisoft/yii2": "*"
+        "yiisoft/yii2": "*",
+        "yiisoft/yii2-bootstrap": "*"
     },
     "autoload": {
         "psr-4": {
