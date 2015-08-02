@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use yii\web\Controller;
+use zhuravljov\yii\rest\models\Sender;
 
 class DefaultController extends Controller
 {
@@ -14,6 +15,13 @@ class DefaultController extends Controller
 
     public function actionIndex()
     {
-        return $this->render('index');
+        $model = new Sender();
+        if ($model->load(\Yii::$app->request->post()) && $model->validate()) {
+
+        }
+        $model->addNewParamRows();
+        return $this->render('index', [
+            'model' => $model,
+        ]);
     }
 }

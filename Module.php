@@ -4,6 +4,7 @@ namespace zhuravljov\yii\rest;
 
 use Yii;
 use yii\base\BootstrapInterface;
+use yii\helpers\Url;
 use yii\web\Application;
 use yii\web\ForbiddenHttpException;
 
@@ -21,6 +22,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * by localhost.
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
+    /**
+     * @var string the base URL for rest requests.
+     */
+    public $baseUrl;
 
     /**
      * @inheritdoc
@@ -31,6 +36,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
             $app->getUrlManager()->addRules([
                 $this->id => $this->id . '/default/index',
             ], false);
+            if ($this->baseUrl === null) {
+                $this->baseUrl = Url::base(true) . '/';
+            }
         }
     }
 
