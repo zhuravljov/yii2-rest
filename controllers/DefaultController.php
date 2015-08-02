@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -36,12 +37,14 @@ class DefaultController extends Controller
 
         return $this->render('index', [
             'model' => $model,
+            'history' => $this->loadHistory(),
         ]);
     }
 
     /**
      * @param string $tag
      * @return Sender
+     * @throws NotFoundHttpException
      */
     protected function findSender($tag)
     {
@@ -50,19 +53,20 @@ class DefaultController extends Controller
         
         if (file_exists($dataFileName)) {
             $data = unserialize(file_get_contents($dataFileName));
+
             return new Sender([
-                'method' => $data['method'],
-                'endpoint' => $data['endpoint'],
-                'tab' => $data['tab'],
-                'queryKeys' => $data['queryKeys'],
-                'queryValues' => $data['queryValues'],
-                'queryActives' => $data['queryActives'],
-                'bodyKeys' => $data['bodyKeys'],
-                'bodyValues' => $data['bodyValues'],
-                'bodyActives' => $data['bodyActives'],
-                'headerKeys' => $data['headerKeys'],
-                'headerValues' => $data['headerValues'],
-                'headerActives' => $data['headerActives'],
+                'method' => ArrayHelper::remove($data, 'method'),
+                'endpoint' => ArrayHelper::remove($data, 'endpoint'),
+                'tab' => ArrayHelper::remove($data, 'tab', 1),
+                'queryKeys' => ArrayHelper::remove($data, 'queryKeys', []),
+                'queryValues' => ArrayHelper::remove($data, 'queryValues', []),
+                'queryActives' => ArrayHelper::remove($data, 'queryActives', []),
+                'bodyKeys' => ArrayHelper::remove($data, 'bodyKeys', []),
+                'bodyValues' => ArrayHelper::remove($data, 'bodyValues', []),
+                'bodyActives' => ArrayHelper::remove($data, 'bodyActives', []),
+                'headerKeys' => ArrayHelper::remove($data, 'headerKeys', []),
+                'headerValues' => ArrayHelper::remove($data, 'headerValues', []),
+                'headerActives' => ArrayHelper::remove($data, 'headerActives', []),
             ]);
         } else {
             throw new NotFoundHttpException('Request not found.');
@@ -77,18 +81,13 @@ class DefaultController extends Controller
     {
         $tag = uniqid();
         $time = time();
-
         $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
-
         $historyFileName = $path . '/history.data';
         $dataFileName = $path . "/{$tag}.data";
 
-        $history = [];
-        if (file_exists($historyFileName)) {
-            $history = unserialize(file_get_contents($historyFileName));
-        }
+        $this->loadHistory();
 
-        $history[$tag] = [
+        $this->_history[$tag] = [
             'time' => $time,
             'method' => $model->method,
             'endpoint' => $model->endpoint,
@@ -110,9 +109,26 @@ class DefaultController extends Controller
         ];
 
         FileHelper::createDirectory($path);
-        file_put_contents($historyFileName, serialize($history));
+        file_put_contents($historyFileName, serialize($this->_history));
         file_put_contents($dataFileName, serialize($data));
 
         return $tag;
     }
+
+    protected function loadHistory()
+    {
+        if ($this->_history !== null) return $this->_history;
+
+        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
+        $historyFileName = $path . '/history.data';
+
+        $this->_history = [];
+        if (file_exists($historyFileName)) {
+            $this->_history = unserialize(file_get_contents($historyFileName));
+        }
+
+        return $this->_history;
+    }
+
+    private $_history;
 }
