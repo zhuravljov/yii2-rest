@@ -22,7 +22,7 @@ $asset = \zhuravljov\yii\rest\Asset::register($this);
 <?php $this->beginBody() ?>
 <?php
 NavBar::begin([
-    'brandLabel' => 'Yii2 REST Client',
+    'brandLabel' => 'REST Client',
     'brandUrl' => ['default/index'],
     'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
 ]);

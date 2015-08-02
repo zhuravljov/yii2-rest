@@ -6,7 +6,10 @@ body {
     margin-top: 30px;
     padding: 15px 0 30px;
 }
-
+.navbar-brand {
+    background: url(yii-logo.png) left center no-repeat;
+    padding-left: 35px;
+}
 .tab-content {
     margin-top: 15px;
 }
