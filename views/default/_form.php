@@ -79,9 +79,9 @@ HTML
                 <?= $this->render('_params', [
                     'model' => $model,
                     'form' => $form,
-                    'keyAttribute' => 'paramKeys',
-                    'valueAttribute' => 'paramValues',
-                    'activeAttribute' => 'paramActives',
+                    'keyAttribute' => 'queryKeys',
+                    'valueAttribute' => 'queryValues',
+                    'activeAttribute' => 'queryActives',
                 ]) ?>
             </div><!-- #request-params -->
 
@@ -89,9 +89,9 @@ HTML
                 <?= $this->render('_params', [
                     'model' => $model,
                     'form' => $form,
-                    'keyAttribute' => 'dataKeys',
-                    'valueAttribute' => 'dataValues',
-                    'activeAttribute' => 'dataActives',
+                    'keyAttribute' => 'bodyKeys',
+                    'valueAttribute' => 'bodyValues',
+                    'activeAttribute' => 'bodyActives',
                 ]) ?>
             </div><!-- #request-body -->
 

@@ -16,13 +16,13 @@ class Sender extends Model
 
     public $tab = 1;
 
-    public $paramKeys = [];
-    public $paramValues = [];
-    public $paramActives = [];
+    public $queryKeys = [];
+    public $queryValues = [];
+    public $queryActives = [];
 
-    public $dataKeys = [];
-    public $dataValues = [];
-    public $dataActives = [];
+    public $bodyKeys = [];
+    public $bodyValues = [];
+    public $bodyActives = [];
 
     public $headerKeys = [];
     public $headerValues = [];
@@ -35,9 +35,9 @@ class Sender extends Model
             ['method', 'in', 'range' => array_keys($this->methodLabels())],
             ['endpoint', 'string'],
             ['tab', 'in', 'range' => [1, 2, 3]],
-            [['paramKeys', 'dataKeys', 'headerKeys'], 'each', 'rule' => ['string']],
-            [['paramValues', 'dataValues', 'headerValues'], 'each', 'rule' => ['string']],
-            [['paramActives', 'dataActives', 'headerActives'], 'each', 'rule' => ['boolean']],
+            [['queryKeys', 'bodyKeys', 'headerKeys'], 'each', 'rule' => ['string']],
+            [['queryValues', 'bodyValues', 'headerValues'], 'each', 'rule' => ['string']],
+            [['queryActives', 'bodyActives', 'headerActives'], 'each', 'rule' => ['boolean']],
         ];
     }
 
@@ -53,38 +53,38 @@ class Sender extends Model
 
     protected function beforeValidateParamRows()
     {
-        $keys = (array)$this->paramKeys;
-        $values = (array)$this->paramValues;
-        $actives = (array)$this->paramActives;
-        $this->paramKeys = [];
-        $this->paramValues = [];
-        $this->paramActives = [];
+        $keys = (array)$this->queryKeys;
+        $values = (array)$this->queryValues;
+        $actives = (array)$this->queryActives;
+        $this->queryKeys = [];
+        $this->queryValues = [];
+        $this->queryActives = [];
         while (
             ($key = each($keys)) &&
             ($value = each($values)) &&
             ($active = each($actives))
         ) {
             if ($key[1] === '' && $value[1] === '') continue;
-            $this->paramKeys[] = $key[1];
-            $this->paramValues[] = $value[1];
-            $this->paramActives[] = $active[1];
+            $this->queryKeys[] = $key[1];
+            $this->queryValues[] = $value[1];
+            $this->queryActives[] = $active[1];
         }
 
-        $keys = (array)$this->dataKeys;
-        $values = (array)$this->dataValues;
-        $actives = (array)$this->dataActives;
-        $this->dataKeys = [];
-        $this->dataValues = [];
-        $this->dataActives = [];
+        $keys = (array)$this->bodyKeys;
+        $values = (array)$this->bodyValues;
+        $actives = (array)$this->bodyActives;
+        $this->bodyKeys = [];
+        $this->bodyValues = [];
+        $this->bodyActives = [];
         while (
             ($key = each($keys)) &&
             ($value = each($values)) &&
             ($active = each($actives))
         ) {
             if ($key[1] === '' && $value[1] === '') continue;
-            $this->dataKeys[] = $key[1];
-            $this->dataValues[] = $value[1];
-            $this->dataActives[] = $active[1];
+            $this->bodyKeys[] = $key[1];
+            $this->bodyValues[] = $value[1];
+            $this->bodyActives[] = $active[1];
         }
 
         $keys = (array)$this->headerKeys;
@@ -107,13 +107,13 @@ class Sender extends Model
 
     public function addNewParamRows()
     {
-        $this->paramKeys[] = '';
-        $this->paramValues[] = '';
-        $this->paramActives[] = true;
+        $this->queryKeys[] = '';
+        $this->queryValues[] = '';
+        $this->queryActives[] = true;
 
-        $this->dataKeys[] = '';
-        $this->dataValues[] = '';
-        $this->dataActives[] = true;
+        $this->bodyKeys[] = '';
+        $this->bodyValues[] = '';
+        $this->bodyActives[] = true;
 
         $this->headerKeys[] = '';
         $this->headerValues[] = '';
@@ -124,10 +124,10 @@ class Sender extends Model
     {
         return [
             'endpoint' => 'endpoint',
-            'paramKeys' => 'Query Param',
-            'paramValues' => 'Value',
-            'dataKeys' => 'Body Param',
-            'dataValues' => 'Value',
+            'queryKeys' => 'Query Param',
+            'queryValues' => 'Value',
+            'bodyKeys' => 'Body Param',
+            'bodyValues' => 'Value',
             'headerKeys' => 'Header',
             'headerValues' => 'Value',
         ];

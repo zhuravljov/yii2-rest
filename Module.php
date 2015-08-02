@@ -26,6 +26,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @var string the base URL for rest requests.
      */
     public $baseUrl;
+    /**
+     * @var string log path
+     */
+    public $logPath = '@runtime';
 
     /**
      * @inheritdoc
@@ -34,6 +38,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         if ($app instanceof Application) {
             $app->getUrlManager()->addRules([
+                $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/default/index',
                 $this->id => $this->id . '/default/index',
             ], false);
             if ($this->baseUrl === null) {
