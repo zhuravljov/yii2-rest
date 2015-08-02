@@ -1,10 +1,10 @@
 <?php
 use yii\bootstrap\ActiveForm;
-use zhuravljov\yii\rest\models\Sender;
+use zhuravljov\yii\rest\models\RequestForm;
 
 /**
  * @var \yii\web\View $this
- * @var Sender $model
+ * @var RequestForm $model
  * @var ActiveForm $form
  */
 

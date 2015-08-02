@@ -3,11 +3,10 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
-use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use zhuravljov\yii\rest\models\Sender;
+use zhuravljov\yii\rest\models\RequestForm;
 
 class DefaultController extends Controller
 {
@@ -20,16 +19,16 @@ class DefaultController extends Controller
     public function actionIndex($tag = null)
     {
         if ($tag === null) {
-            $model = new Sender();
+            $model = new RequestForm();
         } else {
-            $model = $this->findSender($tag);
+            $model = $this->findModel($tag);
         }
 
         if (
             $model->load(Yii::$app->request->post()) &&
             $model->validate()
         ) {
-            $tag = $this->saveSender($model);
+            $tag = $this->saveModel($model);
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
 
@@ -43,41 +42,28 @@ class DefaultController extends Controller
 
     /**
      * @param string $tag
-     * @return Sender
+     * @return RequestForm
      * @throws NotFoundHttpException
      */
-    protected function findSender($tag)
+    protected function findModel($tag)
     {
         $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
         $dataFileName = $path . "/{$tag}.data";
         
         if (file_exists($dataFileName)) {
-            $data = unserialize(file_get_contents($dataFileName));
-
-            return new Sender([
-                'method' => ArrayHelper::remove($data, 'method'),
-                'endpoint' => ArrayHelper::remove($data, 'endpoint'),
-                'tab' => ArrayHelper::remove($data, 'tab', 1),
-                'queryKeys' => ArrayHelper::remove($data, 'queryKeys', []),
-                'queryValues' => ArrayHelper::remove($data, 'queryValues', []),
-                'queryActives' => ArrayHelper::remove($data, 'queryActives', []),
-                'bodyKeys' => ArrayHelper::remove($data, 'bodyKeys', []),
-                'bodyValues' => ArrayHelper::remove($data, 'bodyValues', []),
-                'bodyActives' => ArrayHelper::remove($data, 'bodyActives', []),
-                'headerKeys' => ArrayHelper::remove($data, 'headerKeys', []),
-                'headerValues' => ArrayHelper::remove($data, 'headerValues', []),
-                'headerActives' => ArrayHelper::remove($data, 'headerActives', []),
-            ]);
+            $model = new RequestForm();
+            $model->setAttributes(unserialize(file_get_contents($dataFileName)));
+            return $model;
         } else {
             throw new NotFoundHttpException('Request not found.');
         }
     }
 
     /**
-     * @param Sender $model
+     * @param RequestForm $model
      * @return string
      */
-    protected function saveSender(Sender $model)
+    protected function saveModel(RequestForm $model)
     {
         $tag = uniqid();
         $time = time();
@@ -92,25 +78,9 @@ class DefaultController extends Controller
             'method' => $model->method,
             'endpoint' => $model->endpoint,
         ];
-        $data = [
-            'time' => $time,
-            'method' => $model->method,
-            'endpoint' => $model->endpoint,
-            'tab' => $model->tab,
-            'queryKeys' => $model->queryKeys,
-            'queryValues' => $model->queryValues,
-            'queryActives' => $model->queryActives,
-            'bodyKeys' => $model->bodyKeys,
-            'bodyValues' => $model->bodyValues,
-            'bodyActives' => $model->bodyActives,
-            'headerKeys' => $model->headerKeys,
-            'headerValues' => $model->headerValues,
-            'headerActives' => $model->headerActives,
-        ];
-
         FileHelper::createDirectory($path);
         file_put_contents($historyFileName, serialize($this->_history));
-        file_put_contents($dataFileName, serialize($data));
+        file_put_contents($dataFileName, serialize($model->attributes));
 
         return $tag;
     }

@@ -5,11 +5,11 @@ namespace zhuravljov\yii\rest\models;
 use yii\base\Model;
 
 /**
- * Class Sender
+ * Class RequestForm
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class Sender extends Model
+class RequestForm extends Model
 {
     public $method;
     public $endpoint;

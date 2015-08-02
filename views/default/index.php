@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
- * @var \zhuravljov\yii\rest\models\Sender $model
+ * @var \zhuravljov\yii\rest\models\RequestForm $model
  * @var array $history
  */
 
