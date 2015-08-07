@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\rest\models;
 
 use yii\base\Model;
+use yii\validators\Validator;
 
 /**
  * Class RequestForm
@@ -11,6 +12,8 @@ use yii\base\Model;
  */
 class RequestForm extends Model
 {
+    public $baseUrl;
+
     public $method;
     public $endpoint;
 
@@ -31,14 +34,44 @@ class RequestForm extends Model
     public function rules()
     {
         return [
-            [['method', 'endpoint'], 'required'],
+            ['method', 'required'],
             ['method', 'in', 'range' => array_keys($this->methodLabels())],
+
             ['endpoint', 'string'],
+            ['endpoint', 'validateEndpoint'],
+            ['endpoint', 'required'],
+
             ['tab', 'in', 'range' => [1, 2, 3]],
+
             [['queryKeys', 'bodyKeys', 'headerKeys'], 'each', 'rule' => ['string']],
             [['queryValues', 'bodyValues', 'headerValues'], 'each', 'rule' => ['string']],
             [['queryActives', 'bodyActives', 'headerActives'], 'each', 'rule' => ['boolean']],
         ];
+    }
+
+    public function validateEndpoint()
+    {
+        $url = $this->baseUrl . $this->endpoint;
+        $validator = Validator::createValidator('url', $this, []);
+        if ($validator->validate($url, $error)) {
+            // Crop fragment
+            if (($pos = strpos($this->endpoint, '#')) !== false) {
+                $this->endpoint = substr($this->endpoint, 0 , $pos);
+            }
+            // Crop query
+            if (($pos = strpos($this->endpoint, '?')) !== false) {
+                $this->endpoint = substr($this->endpoint, 0 , $pos);
+            }
+            // Parse params
+            foreach (explode('&', parse_url($url, PHP_URL_QUERY)) as $couple) {
+                list($key, $value) = explode('=', $couple, 2) + [1 => ''];
+                $this->queryKeys[] = urldecode($key);
+                $this->queryValues[] = urldecode($value);
+                $this->queryActives[] = true;
+            }
+        } else {
+            $this->addError('endpoint', $error);
+        }
     }
 
     public function beforeValidate()

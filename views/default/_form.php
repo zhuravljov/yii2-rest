@@ -7,8 +7,6 @@ use zhuravljov\yii\rest\models\RequestForm;
  * @var RequestForm $model
  * @var ActiveForm $form
  */
-
-$baseUrl = $this->context->module->baseUrl;
 ?>
 <div class="rest-default-form">
     <?php $form = ActiveForm::begin([
@@ -36,7 +34,7 @@ $baseUrl = $this->context->module->baseUrl;
                     'template' => <<<HTML
                         {label}
                         <div class="input-group">
-                            <div class="input-group-addon">$baseUrl</div>
+                            <div class="input-group-addon">$model->baseUrl</div>
                             {input}
                             <span class="input-group-btn">
                                 <button class="btn btn-lg btn-primary" type="submit" tabindex="-1">Send</button>

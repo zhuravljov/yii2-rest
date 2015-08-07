@@ -19,7 +19,7 @@ class DefaultController extends Controller
     public function actionIndex($tag = null)
     {
         if ($tag === null) {
-            $model = new RequestForm();
+            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
         } else {
             $model = $this->findModel($tag);
         }
@@ -51,7 +51,7 @@ class DefaultController extends Controller
         $dataFileName = $path . "/{$tag}.data";
         
         if (file_exists($dataFileName)) {
-            $model = new RequestForm();
+            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
             $model->setAttributes(unserialize(file_get_contents($dataFileName)));
             return $model;
         } else {
@@ -80,7 +80,7 @@ class DefaultController extends Controller
         ];
         FileHelper::createDirectory($path);
         file_put_contents($historyFileName, serialize($this->_history));
-        file_put_contents($dataFileName, serialize($model->attributes));
+        file_put_contents($dataFileName, serialize($model->getAttributes(null, ['baseUrl'])));
 
         return $tag;
     }
