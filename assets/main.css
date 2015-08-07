@@ -7,8 +7,8 @@ body {
     padding: 15px 0 30px;
 }
 .navbar-brand {
-    background: url(yii-logo.png) left center no-repeat;
-    padding-left: 35px;
+    background: url(yii-logo.png) 15px center no-repeat;
+    padding-left: 50px;
 }
 .tab-content {
     margin-top: 15px;
