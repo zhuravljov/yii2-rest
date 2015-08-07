@@ -11,7 +11,7 @@ use yii\helpers\Html;
 $historyItems = [];
 foreach (array_reverse($history, true) as $tag => $row) {
     $historyItems[] = [
-        'url' => ['index', 'tag' => $tag],
+        'url' => ['default/index', 'tag' => $tag],
         'label' =>
             Html::tag('small', \Yii::$app->formatter->asRelativeTime($row['time']), ['class' => 'pull-right']) .
             Html::tag('span', Html::encode($row['method']), ['class' => 'text-uppercase']) .
