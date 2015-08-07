@@ -21,14 +21,14 @@ class DefaultController extends Controller
         if ($tag === null) {
             $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
         } else {
-            $model = $this->findModel($tag);
+            $model = $this->find($tag);
         }
 
         if (
             $model->load(Yii::$app->request->post()) &&
             $model->validate()
         ) {
-            $tag = $this->saveModel($model);
+            $tag = $this->save($model);
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
 
@@ -36,56 +36,14 @@ class DefaultController extends Controller
 
         return $this->render('index', [
             'model' => $model,
-            'history' => $this->loadHistory(),
+            'history' => $this->getHistory(),
         ]);
     }
 
     /**
-     * @param string $tag
-     * @return RequestForm
-     * @throws NotFoundHttpException
+     * @return array
      */
-    protected function findModel($tag)
-    {
-        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
-        $dataFileName = $path . "/{$tag}.data";
-        
-        if (file_exists($dataFileName)) {
-            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
-            $model->setAttributes(unserialize(file_get_contents($dataFileName)));
-            return $model;
-        } else {
-            throw new NotFoundHttpException('Request not found.');
-        }
-    }
-
-    /**
-     * @param RequestForm $model
-     * @return string
-     */
-    protected function saveModel(RequestForm $model)
-    {
-        $tag = uniqid();
-        $time = time();
-        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
-        $historyFileName = $path . '/history.data';
-        $dataFileName = $path . "/{$tag}.data";
-
-        $this->loadHistory();
-
-        $this->_history[$tag] = [
-            'time' => $time,
-            'method' => $model->method,
-            'endpoint' => $model->endpoint,
-        ];
-        FileHelper::createDirectory($path);
-        file_put_contents($historyFileName, serialize($this->_history));
-        file_put_contents($dataFileName, serialize($model->getAttributes(null, ['baseUrl'])));
-
-        return $tag;
-    }
-
-    protected function loadHistory()
+    protected function getHistory()
     {
         if ($this->_history !== null) return $this->_history;
 
@@ -101,4 +59,49 @@ class DefaultController extends Controller
     }
 
     private $_history;
+
+    /**
+     * @param string $tag
+     * @return RequestForm
+     * @throws NotFoundHttpException
+     */
+    protected function find($tag)
+    {
+        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
+        $dataFileName = $path . "/{$tag}.data";
+
+        if (file_exists($dataFileName)) {
+            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
+            $model->setAttributes(unserialize(file_get_contents($dataFileName)));
+            return $model;
+        } else {
+            throw new NotFoundHttpException('Request not found.');
+        }
+    }
+
+    /**
+     * @param RequestForm $model
+     * @return string
+     */
+    protected function save(RequestForm $model)
+    {
+        $tag = uniqid();
+        $time = time();
+        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
+        $historyFileName = $path . '/history.data';
+        $dataFileName = $path . "/{$tag}.data";
+
+        $this->getHistory();
+
+        $this->_history[$tag] = [
+            'time' => $time,
+            'method' => $model->method,
+            'endpoint' => $model->endpoint,
+        ];
+        FileHelper::createDirectory($path);
+        file_put_contents($historyFileName, serialize($this->_history));
+        file_put_contents($dataFileName, serialize($model->getAttributes(null, ['baseUrl'])));
+
+        return $tag;
+    }
 }

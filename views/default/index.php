@@ -30,17 +30,28 @@ foreach (array_reverse($history, true) as $tag => $row) {
         <div class="col-lg-3">
 
             <ul class="nav nav-tabs nav-justified">
-                <li class="active">
-                    <a href="#history" data-toggle="tab">History</a>
+                <li>
+                    <a href="#collections" data-toggle="tab">
+                        Collections
+                    </a>
                 </li>
                 <li>
-                    <a href="#collections" data-toggle="tab">Collections</a>
+                    <a href="#history" data-toggle="tab">
+                        History
+                        <?= Html::tag('span', count($history), [
+                            'class' => 'badge' . (!count($history) ? ' hidden' : '')
+                        ]) ?>
+                    </a>
                 </li>
             </ul>
 
             <div class="tab-content">
 
-                <div id="history" class="tab-pane active">
+                <div id="collections" class="tab-pane">
+                    TBD
+                </div><!-- #collections -->
+
+                <div id="history" class="tab-pane">
                     <?= Nav::widget([
                         'options' => ['class' => 'nav nav-pills nav-stacked'],
                         'encodeLabels' => false,
@@ -48,12 +59,24 @@ foreach (array_reverse($history, true) as $tag => $row) {
                     ]) ?>
                 </div><!-- #history -->
 
-                <div id="collections" class="tab-pane">
-                    collections
-                </div><!-- #collections -->
-
             </div>
 
         </div>
     </div>
 </div>
+<?php
+$this->registerJs(<<<JS
+
+if (window.localStorage) {
+    var restHistoryTab = localStorage['restHistoryTab'] || 'collections';
+    $('a[href=#' + restHistoryTab + ']').tab('show');
+    $('a[href=#collections]').on('shown.bs.tab', function() {
+        localStorage['restHistoryTab'] = 'collections';
+    });
+    $('a[href=#history]').on('shown.bs.tab', function() {
+        localStorage['restHistoryTab'] = 'history';
+    });
+}
+
+JS
+);
