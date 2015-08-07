@@ -63,11 +63,14 @@ class RequestForm extends Model
                 $this->endpoint = substr($this->endpoint, 0 , $pos);
             }
             // Parse params
-            foreach (explode('&', parse_url($url, PHP_URL_QUERY)) as $couple) {
-                list($key, $value) = explode('=', $couple, 2) + [1 => ''];
-                $this->queryKeys[] = urldecode($key);
-                $this->queryValues[] = urldecode($value);
-                $this->queryActives[] = true;
+            $query = parse_url($url, PHP_URL_QUERY);
+            if (trim($query) !== '') {
+                foreach (explode('&', $query) as $couple) {
+                    list($key, $value) = explode('=', $couple, 2) + [1 => ''];
+                    $this->queryKeys[] = urldecode($key);
+                    $this->queryValues[] = urldecode($value);
+                    $this->queryActives[] = true;
+                }
             }
         } else {
             $this->addError('endpoint', $error);

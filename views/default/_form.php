@@ -1,5 +1,6 @@
 <?php
 use yii\bootstrap\ActiveForm;
+use yii\helpers\Html;
 use zhuravljov\yii\rest\models\RequestForm;
 
 /**
@@ -54,19 +55,33 @@ HTML
         </div>
 
         <ul class="nav nav-tabs">
+            <?php
+            $queryCount = count($model->queryKeys) - 1;
+            $bodyCount = count($model->bodyKeys) - 1;
+            $headersCount = count($model->headerKeys) - 1;
+            ?>
             <li class="<?= $model->tab == 1 ? 'active' : '' ?>">
                 <a href="#request-query" data-toggle="tab" tabindex="-1">
                     Query
+                    <?= Html::tag('span', $queryCount, [
+                        'class' => 'badge' . (!$queryCount ? ' hidden' : '')
+                    ]) ?>
                 </a>
             </li>
             <li class="<?= $model->tab == 2 ? 'active' : '' ?>">
                 <a href="#request-body" data-toggle="tab" tabindex="-1">
                     Body
+                    <?= Html::tag('span', $bodyCount, [
+                        'class' => 'badge' . (!$bodyCount ? ' hidden' : '')
+                    ]) ?>
                 </a>
             </li>
             <li class="<?= $model->tab == 3 ? 'active' : '' ?>">
                 <a href="#request-headers" data-toggle="tab" tabindex="-1">
                     Headers
+                    <?= Html::tag('span', $headersCount, [
+                        'class' => 'badge' . (!$headersCount ? ' hidden' : '')
+                    ]) ?>
                 </a>
             </li>
         </ul>
@@ -110,15 +125,18 @@ HTML
 <?php
 $this->registerJs(<<<'JS'
 
-var inputSenderTab = $('#sender-tab');
-$('a[href=#request-query]').on('show.bs.tab', function() {
+var inputSenderTab = $('#requestform-tab');
+$('a[href=#request-query]').on('shown.bs.tab', function() {
     inputSenderTab.val(1);
+    $('#request-query').find(':text').first().focus();
 });
-$('a[href=#request-body]').on('show.bs.tab', function() {
+$('a[href=#request-body]').on('shown.bs.tab', function() {
     inputSenderTab.val(2);
+    $('#request-body').find(':text').first().focus();
 });
-$('a[href=#request-headers]').on('show.bs.tab', function() {
+$('a[href=#request-headers]').on('shown.bs.tab', function() {
     inputSenderTab.val(3);
+    $('#request-headers').find(':text').first().focus();
 });
 
 JS
