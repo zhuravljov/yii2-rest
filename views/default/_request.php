@@ -9,12 +9,13 @@ use zhuravljov\yii\rest\models\RequestForm;
  * @var ActiveForm $form
  */
 ?>
-<div class="rest-default-form">
+<div class="rest-request">
     <?php $form = ActiveForm::begin([
-        'enableClientValidation' => false,
+        'action' => ['index'],
         'fieldConfig' => [
             'labelOptions' => ['class' => 'control-label sr-only'],
         ],
+        'enableClientValidation' => false,
     ]) ?>
         <?= $form->field($model, 'tab', [
             'template' => '{input}',

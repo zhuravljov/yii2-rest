@@ -4,6 +4,7 @@ namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
 use yii\helpers\FileHelper;
+use yii\httpclient\Client;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use zhuravljov\yii\rest\models\RequestForm;
@@ -28,7 +29,8 @@ class DefaultController extends Controller
             $model->load(Yii::$app->request->post()) &&
             $model->validate()
         ) {
-            $tag = $this->save($model);
+            $response = $this->send($model);
+            $tag = $this->save($model, $response);
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
 
@@ -72,7 +74,9 @@ class DefaultController extends Controller
 
         if (file_exists($dataFileName)) {
             $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
-            $model->setAttributes(unserialize(file_get_contents($dataFileName)));
+            $data = unserialize(file_get_contents($dataFileName));
+            $model->setAttributes($data['request']);
+            $model->response = $data['response'];
             return $model;
         } else {
             throw new NotFoundHttpException('Request not found.');
@@ -81,9 +85,10 @@ class DefaultController extends Controller
 
     /**
      * @param RequestForm $model
+     * @param array $response
      * @return string
      */
-    protected function save(RequestForm $model)
+    protected function save(RequestForm $model, $response)
     {
         $tag = uniqid();
         $time = time();
@@ -100,8 +105,58 @@ class DefaultController extends Controller
         ];
         FileHelper::createDirectory($path);
         file_put_contents($historyFileName, serialize($this->_history));
-        file_put_contents($dataFileName, serialize($model->getAttributes(null, ['baseUrl'])));
+        file_put_contents($dataFileName, serialize([
+            'request' => $model->getAttributes(null, ['baseUrl', 'response']),
+            'response' => $response,
+        ]));
 
         return $tag;
+    }
+
+    protected function send(RequestForm $model)
+    {
+        $url = $model->baseUrl . $model->endpoint;
+        $params = [];
+        foreach ($model->queryKeys as $i => $key) {
+            if ($model->queryActives[$i]) {
+                $params[] = urlencode($key . '=' . $model->queryValues[$i]);
+            }
+        }
+        $url .= '?' . join('&', $params);
+
+        $data = [];
+        foreach ($model->bodyKeys as $i => $key) {
+            if ($model->bodyActives[$i]) {
+                $data[$key] = $model->bodyValues[$i];
+            }
+        }
+
+        $headers = [];
+        foreach ($model->headerKeys as $i => $key) {
+            if ($model->headerActives[$i]) {
+                $headers[$key] = $model->headerValues[$i];
+            }
+        }
+
+        $client = new Client();
+        $request = $client->createRequest()
+            ->setMethod($model->method)
+            ->setUrl($url)
+            ->setData($data ?: null)
+            ->setHeaders($headers ?: null);
+
+        $begin = microtime(true);
+        $response = $request->send();
+
+        $data = [];
+        $data['status'] = $response->getStatusCode();
+        $data['time'] = microtime(true) - $begin;
+        foreach ($response->getHeaders() as $name => $values) {
+            $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
+            $data['headers'][$name] = $values;
+        }
+        $data['content'] = $response->getContent();
+
+        return $data;
     }
 }

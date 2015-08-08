@@ -31,6 +31,8 @@ class RequestForm extends Model
     public $headerValues = [];
     public $headerActives = [];
 
+    public $response = [];
+
     public function rules()
     {
         return [

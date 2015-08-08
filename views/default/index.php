@@ -10,13 +10,10 @@ use yii\helpers\Html;
 
 $historyItems = [];
 foreach (array_reverse($history, true) as $tag => $row) {
+    $label = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
     $historyItems[] = [
-        'url' => ['default/index', 'tag' => $tag],
-        'label' =>
-            Html::tag('small', \Yii::$app->formatter->asRelativeTime($row['time']), ['class' => 'pull-right']) .
-            Html::tag('span', Html::encode($row['method']), ['class' => 'text-uppercase']) .
-            ' ' .
-            Html::encode($row['endpoint']),
+        'url' => ['default/index', 'tag' => $tag, '#' => str_replace(' ', '+', $label)],
+        'label' => $label . Html::tag('small', \Yii::$app->formatter->asRelativeTime($row['time']), ['class' => 'pull-right']),
     ];
 }
 ?>
@@ -24,7 +21,8 @@ foreach (array_reverse($history, true) as $tag => $row) {
     <div class="row">
         <div class="col-lg-9">
 
-            <?= $this->render('_form', ['model' => $model]) ?>
+            <?= $this->render('_request', ['model' => $model]) ?>
+            <?= $this->render('_response', ['data' => $model->response]) ?>
 
         </div>
         <div class="col-lg-3">

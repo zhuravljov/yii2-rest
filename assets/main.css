@@ -37,3 +37,12 @@ body {
 .params-list tr:last-child button.close {
     display: none;
 }
+
+.nav > li > .info {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+}
+.nav > li > .info > .label {
+    white-space: normal;
+}
