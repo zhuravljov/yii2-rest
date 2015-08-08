@@ -120,7 +120,7 @@ class DefaultController extends Controller
         $params = [];
         foreach ($model->queryKeys as $i => $key) {
             if ($model->queryActives[$i]) {
-                $params[] = urlencode($key . '=' . $model->queryValues[$i]);
+                $params[] = $key . '=' . urlencode($model->queryValues[$i]);
             }
         }
         $url .= '?' . join('&', $params);
