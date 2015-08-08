@@ -11,7 +11,7 @@ use yii\web\Response;
     <?php if ($data): ?>
 
         <ul class="nav nav-tabs">
-            <li class="active">
+            <li>
                 <a href="#response-body" data-toggle="tab">
                     Response Body
                 </a>
@@ -58,7 +58,7 @@ use yii\web\Response;
 
         <div class="tab-content">
 
-            <div id="response-body" class="tab-pane active">
+            <div id="response-body" class="tab-pane">
                 <pre><?= Html::encode($data['content']) ?></pre>
             </div><!-- #response-body -->
 
@@ -87,3 +87,19 @@ use yii\web\Response;
         </div>
     <?php endif; ?>
 </div>
+<?php
+$this->registerJs(<<<JS
+
+if (window.localStorage) {
+    var responseTab = localStorage['responseTab'] || 'response-body';
+    $('a[href=#' + responseTab + ']').tab('show');
+    $('a[href=#response-body]').on('shown.bs.tab', function() {
+        localStorage['responseTab'] = 'response-body';
+    });
+    $('a[href=#response-headers]').on('shown.bs.tab', function() {
+        localStorage['responseTab'] = 'response-headers';
+    });
+}
+
+JS
+);
