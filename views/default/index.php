@@ -8,6 +8,12 @@ use yii\helpers\Html;
  * @var array $history
  */
 
+if ($model->method) {
+    $this->title = strtoupper($model->method) . ' ' . $model->endpoint;
+} else {
+    $this->title = 'New Request';
+}
+
 $historyItems = [];
 foreach (array_reverse($history, true) as $tag => $row) {
     $title = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
