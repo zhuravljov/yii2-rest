@@ -46,3 +46,20 @@ body {
 .nav > li > .info > .label {
     white-space: normal;
 }
+
+#history > .nav > li > a > .color {
+    display: block;
+    position: absolute;
+    width: 6px;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+}
+#history > .nav > li > a:hover > .color {
+    top: 0;
+    bottom: 0;
+    border-radius: 4px 0 0 4px;
+}
+#history > .nav > li.active > a > .color {
+    display: none;
+}

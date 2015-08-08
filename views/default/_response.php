@@ -24,20 +24,32 @@ use yii\web\Response;
                     ]) ?>
                 </a>
             </li>
-            <li>
-                <div class="info">
-                    <strong>Status:</strong>
-                    <span class="label <?= $data['status'] < 300 ? 'label-success' : 'label-danger' ?>">
-                        <?= Html::encode($data['status']) ?>
-                        <?= isset(Response::$httpStatuses[$data['status']]) ? Response::$httpStatuses[$data['status']] : '' ?>
-                    </span>
-                </div>
-            </li>
-            <li>
+            <li class="pull-right">
                 <div class="info">
                     <strong>Time:</strong>
                     <span class="label label-default">
                         <?= round($data['time'] * 1000) ?> ms
+                    </span>
+                </div>
+            </li>
+            <li class="pull-right">
+                <div class="info">
+                    <strong>Status:</strong>
+                    <?php
+                    $class = 'label';
+                    if ($data['status'] < 300) {
+                        $class .= ' label-success';
+                    } elseif ($data['status'] < 400) {
+                        $class .= ' label-info';
+                    } elseif ($data['status'] < 500) {
+                        $class .= ' label-warning';
+                    } else {
+                        $class .= ' label-danger';
+                    }
+                    ?>
+                    <span class="<?= $class ?>">
+                        <?= Html::encode($data['status']) ?>
+                        <?= isset(Response::$httpStatuses[$data['status']]) ? Response::$httpStatuses[$data['status']] : '' ?>
                     </span>
                 </div>
             </li>

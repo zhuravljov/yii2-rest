@@ -10,9 +10,20 @@ use yii\helpers\Html;
 
 $historyItems = [];
 foreach (array_reverse($history, true) as $tag => $row) {
-    $label = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
+    $title = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
+    $class = 'color';
+    if ($row['status'] < 300) {
+        $class .= ' label-success';
+    } elseif ($row['status'] < 400) {
+        $class .= ' label-info';
+    } elseif ($row['status'] < 500) {
+        $class .= ' label-warning';
+    } else {
+        $class .= ' label-danger';
+    }
+    $label = $title . ' ' . Html::tag('span', '', ['class' => $class]);
     $historyItems[] = [
-        'url' => ['default/index', 'tag' => $tag, '#' => str_replace(' ', '+', $label)],
+        'url' => ['default/index', 'tag' => $tag, '#' => str_replace(' ', '+', $title)],
         'label' => $label . Html::tag('small', \Yii::$app->formatter->asRelativeTime($row['time']), ['class' => 'pull-right']),
     ];
 }

@@ -102,6 +102,7 @@ class DefaultController extends Controller
             'time' => $time,
             'method' => $model->method,
             'endpoint' => $model->endpoint,
+            'status' => $response['status'],
         ];
         FileHelper::createDirectory($path);
         file_put_contents($historyFileName, serialize($this->_history));
