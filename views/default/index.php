@@ -16,7 +16,7 @@ if ($model->method) {
 
 $historyItems = [];
 foreach (array_reverse($history, true) as $tag => $row) {
-    $title = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
+    $name = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
     $class = 'color';
     if ($row['status'] < 300) {
         $class .= ' label-success';
@@ -27,9 +27,9 @@ foreach (array_reverse($history, true) as $tag => $row) {
     } else {
         $class .= ' label-danger';
     }
-    $label = $title . ' ' . Html::tag('span', '', ['class' => $class]);
+    $label = Html::tag('span', $name, ['class' => 'request-name']) . ' ' . Html::tag('span', '', ['class' => $class]);
     $historyItems[] = [
-        'url' => ['default/index', 'tag' => $tag, '#' => str_replace(' ', '+', $title)],
+        'url' => ['default/index', 'tag' => $tag, '#' => str_replace(' ', '+', $name)],
         'label' => $label . Html::tag('small', \Yii::$app->formatter->asRelativeTime($row['time']), ['class' => 'pull-right']),
     ];
 }
@@ -67,7 +67,14 @@ foreach (array_reverse($history, true) as $tag => $row) {
                 </div><!-- #collections -->
 
                 <div id="history" class="tab-pane">
+
+                    <div class="form-group has-feedback">
+                        <input id="history-search" type="text" class="form-control" placeholder="Search" />
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+
                     <?= Nav::widget([
+                        'id' => 'history-list',
                         'options' => ['class' => 'nav nav-pills nav-stacked'],
                         'encodeLabels' => false,
                         'items' => $historyItems,
@@ -92,6 +99,17 @@ if (window.localStorage) {
         localStorage['restHistoryTab'] = 'history';
     });
 }
+
+$('#history-search').keyup(function() {
+    var needle = $(this).val().toLowerCase();
+    $('#history-list').find('li > a > .request-name').each(function() {
+        if ($(this).text().toLowerCase().indexOf(needle) >= 0) {
+            $(this).parents('li').first().show();
+        } else {
+            $(this).parents('li').first().hide();
+        }
+    });
+});
 
 JS
 );
