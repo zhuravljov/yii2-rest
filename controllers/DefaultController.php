@@ -29,7 +29,7 @@ class DefaultController extends Controller
             $model->validate()
         ) {
             $this->send($model);
-            $tag = $this->module->getStorage()->save($model);
+            $tag = $this->save($model);
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
 
@@ -41,11 +41,6 @@ class DefaultController extends Controller
             'collection' => $this->module->getStorage()->getCollectionGroups(),
             'history' => $this->module->getStorage()->getHistory(),
         ]);
-    }
-
-    protected function groupCollection($items)
-    {
-
     }
 
     public function actionRemoveFromHistory($tag)
@@ -69,13 +64,40 @@ class DefaultController extends Controller
         return $this->redirect(['index']);
     }
 
+    /**
+     * @param string $tag
+     * @return RequestForm
+     * @throws NotFoundHttpException
+     */
     protected function find($tag)
     {
-        if ($model = $this->module->getStorage()->find($tag)) {
+        if ($data = $this->module->getStorage()->find($tag)) {
+            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
+            $model->setAttributes($data['request']);
+            $model->response = $data['response'];
             return $model;
         } else {
             throw new NotFoundHttpException('Page not found.');
         }
+    }
+
+    /**
+     * @param RequestForm $model
+     * @return string tag
+     */
+    protected function save(RequestForm $model)
+    {
+        $tag = $this->module->getStorage()->save([
+            'request' => $model->getAttributes(null, ['baseUrl', 'response']),
+            'response' => $model->response,
+        ]);
+        $this->module->getStorage()->addToHistory($tag, [
+            'tag' => $tag,
+            'method' => $model->method,
+            'endpoint' => $model->endpoint,
+            'status' => $model->response['status'],
+        ]);
+        return $tag;
     }
 
     /**

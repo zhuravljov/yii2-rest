@@ -6,7 +6,6 @@ use Yii;
 use yii\base\Component;
 use yii\base\InvalidParamException;
 use yii\helpers\FileHelper;
-use zhuravljov\yii\rest\models\RequestForm;
 
 /**
  * Class Storage
@@ -32,52 +31,27 @@ class Storage extends Component
 
     /**
      * @param string $tag
-     * @return null|RequestForm
+     * @return null|array
      */
     public function find($tag)
     {
         $fileName = "/{$this->_logPath}/{$tag}.data";
         if (file_exists($fileName)) {
-            $model = new RequestForm([
-                'baseUrl' => $this->module->baseUrl,
-            ]);
-
-            $data = unserialize(file_get_contents($fileName));
-            $model->setAttributes($data['request']);
-            $model->response = $data['response'];
-
-            return $model;
+            return unserialize(file_get_contents($fileName));
         } else {
             return null;
         }
     }
 
     /**
-     * @param RequestForm $model
+     * @param array $data
      * @return string tag
      */
-    public function save(RequestForm $model)
+    public function save(array $data)
     {
         $tag = uniqid();
-
-        $this->addToHistory($tag, [
-            'tag' => $tag,
-            'method' => $model->method,
-            'endpoint' => $model->endpoint,
-            'status' => $model->response['status'],
-        ]);
-
-        file_put_contents(
-            "/{$this->_logPath}/{$tag}.data",
-            serialize([
-                'request' => $model->getAttributes(null, [
-                    'baseUrl',
-                    'response'
-                ]),
-                'response' => $model->response,
-            ])
-        );
-
+        FileHelper::createDirectory($this->_logPath);
+        file_put_contents("/{$this->_logPath}/{$tag}.data", serialize($data));
         return $tag;
     }
 
@@ -133,7 +107,7 @@ class Storage extends Component
      * @param string $tag
      * @param array $data
      */
-    public function addToHistory($tag, $data)
+    public function addToHistory($tag, array $data)
     {
         $this->getHistory();
         $this->_history[$tag] = $data;
