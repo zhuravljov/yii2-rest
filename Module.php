@@ -95,11 +95,20 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         $ip = Yii::$app->getRequest()->getUserIP();
         foreach ($this->allowedIPs as $filter) {
-            if ($filter === '*' || $filter === $ip || (($pos = strpos($filter, '*')) !== false && !strncmp($ip, $filter, $pos))) {
+            if (
+                $filter === '*' || $filter === $ip ||
+                (
+                    ($pos = strpos($filter, '*')) !== false &&
+                    !strncmp($ip, $filter, $pos)
+                )
+            ) {
                 return true;
             }
         }
-        Yii::warning('Access to REST Client is denied due to IP address restriction. The requested IP is ' . $ip, __METHOD__);
+        Yii::warning(
+            'Access to REST Client is denied due to IP address restriction. The requested IP is ' . $ip,
+            __METHOD__
+        );
 
         return false;
     }
@@ -115,6 +124,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 'module' => $this,
             ]);
         }
+
         return $this->_storage;
     }
 

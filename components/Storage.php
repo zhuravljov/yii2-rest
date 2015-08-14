@@ -52,6 +52,7 @@ class Storage extends Component
         $tag = uniqid();
         FileHelper::createDirectory($this->_logPath);
         file_put_contents("/{$this->_logPath}/{$tag}.data", serialize($data));
+
         return $tag;
     }
 

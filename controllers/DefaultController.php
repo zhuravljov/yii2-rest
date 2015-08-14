@@ -30,6 +30,7 @@ class DefaultController extends Controller
         ) {
             $this->send($model);
             $tag = $this->save($model);
+
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
 
@@ -47,6 +48,7 @@ class DefaultController extends Controller
     {
         $this->find($tag);
         $this->module->getStorage()->removeFromHistory($tag);
+
         return $this->redirect(['index']);
     }
 
@@ -54,6 +56,7 @@ class DefaultController extends Controller
     {
         $this->find($tag);
         $this->module->getStorage()->addToCollection($tag);
+
         return $this->redirect(['index', 'tag' => $tag]);
     }
 
@@ -61,6 +64,7 @@ class DefaultController extends Controller
     {
         $this->find($tag);
         $this->module->getStorage()->removeFromCollection($tag);
+
         return $this->redirect(['index']);
     }
 
@@ -75,6 +79,7 @@ class DefaultController extends Controller
             $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
             $model->setAttributes($data['request']);
             $model->response = $data['response'];
+
             return $model;
         } else {
             throw new NotFoundHttpException('Page not found.');
@@ -97,6 +102,7 @@ class DefaultController extends Controller
             'endpoint' => $model->endpoint,
             'status' => $model->response['status'],
         ]);
+
         return $tag;
     }
 

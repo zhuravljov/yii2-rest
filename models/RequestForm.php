@@ -58,11 +58,11 @@ class RequestForm extends Model
         if ($validator->validate($url, $error)) {
             // Crop fragment
             if (($pos = strpos($this->endpoint, '#')) !== false) {
-                $this->endpoint = substr($this->endpoint, 0 , $pos);
+                $this->endpoint = substr($this->endpoint, 0, $pos);
             }
             // Crop query
             if (($pos = strpos($this->endpoint, '?')) !== false) {
-                $this->endpoint = substr($this->endpoint, 0 , $pos);
+                $this->endpoint = substr($this->endpoint, 0, $pos);
             }
             // Parse params
             $query = parse_url($url, PHP_URL_QUERY);
@@ -83,6 +83,7 @@ class RequestForm extends Model
     {
         if (parent::beforeValidate()) {
             $this->beforeValidateParamRows();
+
             return true;
         } else {
             return false;
@@ -102,7 +103,9 @@ class RequestForm extends Model
             ($value = each($values)) &&
             ($active = each($actives))
         ) {
-            if ($key[1] === '' && $value[1] === '') continue;
+            if ($key[1] === '' && $value[1] === '') {
+                continue;
+            }
             $this->queryKeys[] = $key[1];
             $this->queryValues[] = $value[1];
             $this->queryActives[] = $active[1];
@@ -119,7 +122,9 @@ class RequestForm extends Model
             ($value = each($values)) &&
             ($active = each($actives))
         ) {
-            if ($key[1] === '' && $value[1] === '') continue;
+            if ($key[1] === '' && $value[1] === '') {
+                continue;
+            }
             $this->bodyKeys[] = $key[1];
             $this->bodyValues[] = $value[1];
             $this->bodyActives[] = $active[1];
@@ -136,7 +141,9 @@ class RequestForm extends Model
             ($value = each($values)) &&
             ($active = each($actives))
         ) {
-            if ($key[1] === '' && $value[1] === '') continue;
+            if ($key[1] === '' && $value[1] === '') {
+                continue;
+            }
             $this->headerKeys[] = $key[1];
             $this->headerValues[] = $value[1];
             $this->headerActives[] = $active[1];
