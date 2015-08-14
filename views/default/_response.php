@@ -26,7 +26,7 @@ use yii\web\Response;
             </li>
             <li class="pull-right">
                 <div class="info">
-                    <strong>Time:</strong>
+                    Time:
                     <span class="label label-default">
                         <?= round($data['time'] * 1000) ?> ms
                     </span>
@@ -34,7 +34,7 @@ use yii\web\Response;
             </li>
             <li class="pull-right">
                 <div class="info">
-                    <strong>Status:</strong>
+                    Status:
                     <?php
                     $class = 'label';
                     if ($data['status'] < 300) {
