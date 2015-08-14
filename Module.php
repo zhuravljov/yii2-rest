@@ -4,10 +4,19 @@ namespace zhuravljov\yii\rest;
 
 use Yii;
 use yii\base\BootstrapInterface;
+use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\web\Application;
 use yii\web\ForbiddenHttpException;
+use zhuravljov\yii\rest\components\Storage;
 
+/**
+ * Class Module
+ *
+ * @property Storage $storage
+ *
+ * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ */
 class Module extends \yii\base\Module implements BootstrapInterface
 {
     /**
@@ -39,11 +48,15 @@ class Module extends \yii\base\Module implements BootstrapInterface
         if ($app instanceof Application) {
             $app->getUrlManager()->addRules([
                 $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/default/index',
+                $this->id . '/<tag:[0-9a-f]+>/<action:[\w-]+>' => $this->id . '/default/<action>',
+                $this->id . '/<action:[\w-]+>' => $this->id . '/default/<action>',
                 $this->id => $this->id . '/default/index',
             ], false);
             if ($this->baseUrl === null) {
                 $this->baseUrl = Url::base(true) . '/';
             }
+        } else {
+            throw new InvalidConfigException('Can use for web application only.');
         }
     }
 
@@ -90,4 +103,20 @@ class Module extends \yii\base\Module implements BootstrapInterface
 
         return false;
     }
+
+    /**
+     * @return Storage
+     */
+    public function getStorage()
+    {
+        if (!$this->_storage) {
+            $this->_storage = Yii::createObject([
+                'class' => Storage::className(),
+                'module' => $this,
+            ]);
+        }
+        return $this->_storage;
+    }
+
+    private $_storage;
 }

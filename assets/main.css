@@ -14,6 +14,8 @@ body {
     margin-top: 15px;
 }
 
+
+
 .params-list {
     margin: -8px;
 }
@@ -38,28 +40,96 @@ body {
     display: none;
 }
 
-.nav > li > .info {
+
+
+.request-list,
+.request-list ul {
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.request-list  li {
+    position: relative;
+    display: block;
+}
+.request-list .request-list-group {
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #999;
+}
+.request-list li > a {
     position: relative;
     display: block;
     padding: 10px 15px;
+    border-radius: 4px;
 }
-.nav > li > .info > .label {
-    white-space: normal;
+.request-list li > a:hover,
+.request-list li > a:focus {
+    text-decoration: none;
+    background-color: #eee;
+}
+.request-list li.active > a {
+    color: #fff;
+    background-color: #337ab7;
 }
 
-#history > .nav > li > a > .color {
-    display: block;
+.request-list li > .actions {
+    display: none;
     position: absolute;
-    width: 6px;
-    left: 0;
-    top: 10px;
-    bottom: 10px;
+    top: 50%;
+    right: 0;
+    margin-top: -11px;
+    padding-right: 8px;
 }
-#history > .nav > li > a:hover > .color {
+.request-list li:hover > .actions {
+    display: inherit;
+}
+.request-list li > .actions > a {
+    padding: 0 2px;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-decoration: none;
+    opacity: .2;
+}
+.request-list li > .actions > a:hover {
+    text-decoration: none;
+    opacity: .5;
+}
+
+.request-list li > a:after {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 6px;
+    content: "";
+}
+.request-list  li.active > a:after {
+    display: none;
+}
+.request-list li > a:hover:after {
     top: 0;
     bottom: 0;
     border-radius: 4px 0 0 4px;
 }
-#history > .nav > li.active > a > .color {
-    display: none;
+.request-list li.success > a:after {
+    background-color: #5cb85c;
+}
+.request-list li.info > a:after {
+    background-color: #5bc0de;
+}
+.request-list li.warning > a:after {
+    background-color: #f0ad4e;
+}
+.request-list li.danger > a:after {
+    background-color: #d9534f;
+}
+
+.request-list .request-method {
+    text-transform: uppercase;
+    font-weight: bold;
 }

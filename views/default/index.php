@@ -1,10 +1,11 @@
 <?php
-use yii\bootstrap\Nav;
 use yii\helpers\Html;
 
 /**
  * @var \yii\web\View $this
+ * @var string $tag
  * @var \zhuravljov\yii\rest\models\RequestForm $model
+ * @var array $collection
  * @var array $history
  */
 
@@ -12,26 +13,6 @@ if ($model->method) {
     $this->title = strtoupper($model->method) . ' ' . $model->endpoint;
 } else {
     $this->title = 'New Request';
-}
-
-$historyItems = [];
-foreach (array_reverse($history, true) as $tag => $row) {
-    $name = Html::encode(strtoupper($row['method'])) . ' ' . Html::encode($row['endpoint']);
-    $class = 'color';
-    if ($row['status'] < 300) {
-        $class .= ' label-success';
-    } elseif ($row['status'] < 400) {
-        $class .= ' label-info';
-    } elseif ($row['status'] < 500) {
-        $class .= ' label-warning';
-    } else {
-        $class .= ' label-danger';
-    }
-    $label = Html::tag('span', $name, ['class' => 'request-name']) . ' ' . Html::tag('span', '', ['class' => $class]);
-    $historyItems[] = [
-        'url' => ['default/index', 'tag' => $tag, '#' => str_replace(' ', '+', $name)],
-        'label' => $label . Html::tag('small', \Yii::$app->formatter->asRelativeTime($row['time']), ['class' => 'pull-right']),
-    ];
 }
 ?>
 <div class="rest-default-index">
@@ -44,10 +25,10 @@ foreach (array_reverse($history, true) as $tag => $row) {
         </div>
         <div class="col-lg-3">
 
-            <ul class="nav nav-tabs nav-justified">
+            <ul class="request-lists nav nav-tabs nav-justified">
                 <li>
-                    <a href="#collections" data-toggle="tab">
-                        Collections
+                    <a href="#collection" data-toggle="tab">
+                        Collection
                     </a>
                 </li>
                 <li>
@@ -62,22 +43,22 @@ foreach (array_reverse($history, true) as $tag => $row) {
 
             <div class="tab-content">
 
-                <div id="collections" class="tab-pane">
-                    TBD
-                </div><!-- #collections -->
+                <div class="form-group has-feedback">
+                    <input id="history-search" type="text" class="form-control" placeholder="Search" />
+                    <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                </div>
+
+                <div id="collection" class="tab-pane">
+                    <?= $this->render('_collection', [
+                        'activeTag' => $tag,
+                        'items' => $collection,
+                    ]) ?>
+                </div><!-- #collection -->
 
                 <div id="history" class="tab-pane">
-
-                    <div class="form-group has-feedback">
-                        <input id="history-search" type="text" class="form-control" placeholder="Search" />
-                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                    </div>
-
-                    <?= Nav::widget([
-                        'id' => 'history-list',
-                        'options' => ['class' => 'nav nav-pills nav-stacked'],
-                        'encodeLabels' => false,
-                        'items' => $historyItems,
+                    <?= $this->render('_history', [
+                        'activeTag' => $tag,
+                        'items' => $history,
                     ]) ?>
                 </div><!-- #history -->
 
@@ -87,26 +68,35 @@ foreach (array_reverse($history, true) as $tag => $row) {
     </div>
 </div>
 <?php
-$this->registerJs(<<<JS
+$this->registerJs(<<<'JS'
 
 if (window.localStorage) {
-    var restHistoryTab = localStorage['restHistoryTab'] || 'collections';
+    var restHistoryTab = localStorage['restHistoryTab'] || 'collection';
     $('a[href=#' + restHistoryTab + ']').tab('show');
-    $('a[href=#collections]').on('shown.bs.tab', function() {
-        localStorage['restHistoryTab'] = 'collections';
+    $('a[href=#collection]').on('shown.bs.tab', function() {
+        localStorage['restHistoryTab'] = 'collection';
     });
     $('a[href=#history]').on('shown.bs.tab', function() {
         localStorage['restHistoryTab'] = 'history';
     });
 }
 
+JS
+);
+$this->registerJs(<<<'JS'
+
+$('.request-lists a[data-toggle=tab]').on('shown.bs.tab', function() {
+    $('#history-search').focus();
+});
+
 $('#history-search').keyup(function() {
     var needle = $(this).val().toLowerCase();
-    $('#history-list').find('li > a > .request-name').each(function() {
+    $('.request-list li > a > .request-name').each(function() {
+        var item = $(this).parents('li').first();
         if ($(this).text().toLowerCase().indexOf(needle) >= 0) {
-            $(this).parents('li').first().show();
+            item.show();
         } else {
-            $(this).parents('li').first().hide();
+            item.hide();
         }
     });
 });

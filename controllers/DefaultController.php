@@ -3,7 +3,6 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
-use yii\helpers\FileHelper;
 use yii\httpclient\Client;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,91 +28,59 @@ class DefaultController extends Controller
             $model->load(Yii::$app->request->post()) &&
             $model->validate()
         ) {
-            $response = $this->send($model);
-            $tag = $this->save($model, $response);
+            $this->send($model);
+            $tag = $this->module->getStorage()->save($model);
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
 
         $model->addNewParamRows();
 
         return $this->render('index', [
+            'tag' => $tag,
             'model' => $model,
-            'history' => $this->getHistory(),
+            'collection' => $this->module->getStorage()->getCollectionGroups(),
+            'history' => $this->module->getStorage()->getHistory(),
         ]);
     }
 
-    /**
-     * @return array
-     */
-    protected function getHistory()
+    protected function groupCollection($items)
     {
-        if ($this->_history !== null) return $this->_history;
 
-        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
-        $historyFileName = $path . '/history.data';
-
-        $this->_history = [];
-        if (file_exists($historyFileName)) {
-            $this->_history = unserialize(file_get_contents($historyFileName));
-        }
-
-        return $this->_history;
     }
 
-    private $_history;
+    public function actionRemoveFromHistory($tag)
+    {
+        $this->find($tag);
+        $this->module->getStorage()->removeFromHistory($tag);
+        return $this->redirect(['index']);
+    }
 
-    /**
-     * @param string $tag
-     * @return RequestForm
-     * @throws NotFoundHttpException
-     */
+    public function actionAddToCollection($tag)
+    {
+        $this->find($tag);
+        $this->module->getStorage()->addToCollection($tag);
+        return $this->redirect(['index', 'tag' => $tag]);
+    }
+
+    public function actionRemoveFromCollection($tag)
+    {
+        $this->find($tag);
+        $this->module->getStorage()->removeFromCollection($tag);
+        return $this->redirect(['index']);
+    }
+
     protected function find($tag)
     {
-        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
-        $dataFileName = $path . "/{$tag}.data";
-
-        if (file_exists($dataFileName)) {
-            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
-            $data = unserialize(file_get_contents($dataFileName));
-            $model->setAttributes($data['request']);
-            $model->response = $data['response'];
+        if ($model = $this->module->getStorage()->find($tag)) {
             return $model;
         } else {
-            throw new NotFoundHttpException('Request not found.');
+            throw new NotFoundHttpException('Page not found.');
         }
     }
 
     /**
      * @param RequestForm $model
-     * @param array $response
-     * @return string
      */
-    protected function save(RequestForm $model, $response)
-    {
-        $tag = uniqid();
-        $time = time();
-        $path = Yii::getAlias($this->module->logPath . '/' . $this->module->id);
-        $historyFileName = $path . '/history.data';
-        $dataFileName = $path . "/{$tag}.data";
-
-        $this->getHistory();
-
-        $this->_history[$tag] = [
-            'time' => $time,
-            'method' => $model->method,
-            'endpoint' => $model->endpoint,
-            'status' => $response['status'],
-        ];
-        FileHelper::createDirectory($path);
-        file_put_contents($historyFileName, serialize($this->_history));
-        file_put_contents($dataFileName, serialize([
-            'request' => $model->getAttributes(null, ['baseUrl', 'response']),
-            'response' => $response,
-        ]));
-
-        return $tag;
-    }
-
     protected function send(RequestForm $model)
     {
         $url = $model->baseUrl . $model->endpoint;
@@ -158,6 +125,6 @@ class DefaultController extends Controller
         }
         $data['content'] = $response->getContent();
 
-        return $data;
+        $model->response = $data;
     }
 }
