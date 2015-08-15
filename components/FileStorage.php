@@ -72,10 +72,10 @@ class FileStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function writeHistory(array $data)
+    protected function writeHistory(array $rows)
     {
         FileHelper::createDirectory($this->path);
-        file_put_contents("/{$this->path}/history.data", serialize($data));
+        file_put_contents("/{$this->path}/history.data", serialize($rows));
     }
 
     /**
@@ -94,9 +94,9 @@ class FileStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function writeCollection(array $data)
+    protected function writeCollection(array $rows)
     {
         FileHelper::createDirectory($this->path);
-        file_put_contents("/{$this->path}/collection.data", serialize($data));
+        file_put_contents("/{$this->path}/collection.data", serialize($rows));
     }
 }

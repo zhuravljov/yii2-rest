@@ -78,10 +78,10 @@ abstract class Storage extends Object
         ]);
         $this->addToHistory($tag, [
             'tag' => $tag,
-            'time' => time(),
             'method' => $model->method,
             'endpoint' => $model->endpoint,
             'status' => $model->response['status'],
+            'stored_at' => time(),
         ]);
 
         return $tag;
@@ -244,9 +244,9 @@ abstract class Storage extends Object
     abstract protected function readHistory();
 
     /**
-     * @param array $data
+     * @param array $rows
      */
-    abstract protected function writeHistory(array $data);
+    abstract protected function writeHistory(array $rows);
 
     /**
      * @return array
@@ -254,7 +254,7 @@ abstract class Storage extends Object
     abstract protected function readCollection();
 
     /**
-     * @param array $data
+     * @param array $rows
      */
-    abstract protected function writeCollection(array $data);
+    abstract protected function writeCollection(array $rows);
 }

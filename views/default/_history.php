@@ -7,8 +7,6 @@ use yii\helpers\Url;
  * @var string $activeTag
  * @var array $items
  */
-
-
 ?>
 <div class="rest-default-history">
 
