@@ -4,6 +4,7 @@ namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
 use yii\web\Controller;
+use zhuravljov\yii\rest\helpers\ArrayHelper;
 use zhuravljov\yii\rest\models\RequestForm;
 
 class DefaultController extends Controller
@@ -38,8 +39,18 @@ class DefaultController extends Controller
         return $this->render('index', [
             'tag' => $tag,
             'model' => $model,
-            'collection' => $this->module->storage->getCollectionGroups(),
             'history' => $this->module->storage->getHistory(),
+            // TODO Grouping will move to the config level
+            'collection' => ArrayHelper::group(
+                $this->module->storage->getCollection(),
+                function ($row) {
+                    if (preg_match('|[^/]+|', ltrim($row['endpoint'], '/'), $m)) {
+                        return $m[0];
+                    } else {
+                        return 'common';
+                    }
+                }
+            ),
         ]);
     }
 

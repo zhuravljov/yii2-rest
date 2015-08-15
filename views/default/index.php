@@ -5,8 +5,8 @@ use yii\helpers\Html;
  * @var \yii\web\View $this
  * @var string $tag
  * @var \zhuravljov\yii\rest\models\RequestForm $model
- * @var array $collection
  * @var array $history
+ * @var array $collection
  */
 
 if ($model->method) {

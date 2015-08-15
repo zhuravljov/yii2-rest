@@ -96,14 +96,21 @@ class DbStorage extends Storage
      */
     protected function readHistory()
     {
-        return (new Query())
-            ->select(['tag', 'method', 'endpoint', 'status', 'stored_at'])
+        $rows = (new Query())
+            ->select(['tag', 'method', 'endpoint', 'status', 'time' => 'stored_at'])
             ->from($this->tableName)
             ->andWhere(['module_id' => $this->module->id])
             ->andWhere('stored_at IS NOT NULL')
             ->orderBy(['tag' => SORT_ASC])
             ->indexBy('tag')
             ->all($this->db);
+
+        foreach ($rows as &$row) {
+            unset($row['tag']);
+        }
+        unset($row);
+
+        return $rows;
     }
 
     /**
@@ -122,6 +129,8 @@ class DbStorage extends Storage
                     ->execute();
             }
             foreach (array_diff_key($rows, $old) as $tag => $row) {
+                $row['stored_at'] = $row['time'];
+                unset($row['time']);
                 $this->db->createCommand()
                     ->update($this->tableName, $row, [
                         'tag' => $tag,
@@ -137,14 +146,21 @@ class DbStorage extends Storage
      */
     protected function readCollection()
     {
-        return (new Query())
-            ->select(['tag', 'method', 'endpoint', 'status', 'stored_at'])
+        $rows = (new Query())
+            ->select(['tag', 'method', 'endpoint', 'status', 'time' => 'favorited_at'])
             ->from($this->tableName)
             ->andWhere(['module_id' => $this->module->id])
             ->andWhere('favorited_at IS NOT NULL')
             ->orderBy(['tag' => SORT_ASC])
             ->indexBy('tag')
             ->all($this->db);
+
+        foreach ($rows as &$row) {
+            unset($row['tag']);
+        }
+        unset($row);
+
+        return $rows;
     }
 
     /**
@@ -164,7 +180,7 @@ class DbStorage extends Storage
             }
             foreach (array_diff_key($rows, $old) as $tag => $row) {
                 $this->db->createCommand()
-                    ->update($this->tableName, ['favorited_at' => time()], [
+                    ->update($this->tableName, ['favorited_at' => $row['time']], [
                         'tag' => $tag,
                         'module_id' => $this->module->id,
                     ])

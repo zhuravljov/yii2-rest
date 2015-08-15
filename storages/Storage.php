@@ -77,11 +77,10 @@ abstract class Storage extends Object
             'response' => $model->response,
         ]);
         $this->addToHistory($tag, [
-            'tag' => $tag,
             'method' => $model->method,
             'endpoint' => $model->endpoint,
             'status' => $model->response['status'],
-            'stored_at' => time(),
+            'time' => time(),
         ]);
 
         return $tag;
@@ -116,6 +115,7 @@ abstract class Storage extends Object
     {
         if ($this->_collection === null) {
             $this->_collection = $this->readCollection();
+            uasort($this->_collection, [$this, 'compareCollection']);
         }
         if ($tag === null) {
             return $this->_collection;
@@ -123,6 +123,18 @@ abstract class Storage extends Object
             return $this->_collection[$tag];
         } else {
             return $default;
+        }
+    }
+
+    private function compareCollection($row1, $row2)
+    {
+        $methods = ['get', 'post', 'put', 'delete'];
+        if ($result = array_search($row1['method'], $methods) - array_search($row2['method'], $methods)) {
+            return $result; // 1. Order by methods
+        } else if ($result = strcmp($row1['endpoint'], $row2['endpoint'])) {
+            return $result; // 2. Order by endpoints
+        } else {
+            return $row1['time'] - $row2['time']; // 3. Order by time
         }
     }
 
@@ -159,6 +171,7 @@ abstract class Storage extends Object
     public function addToCollection($tag)
     {
         if ($data = $this->getHistory($tag)) {
+            $data['time'] = time();
             $this->getCollection();
             $this->_collection[$tag] = $data;
             $this->writeCollection($this->_collection);
