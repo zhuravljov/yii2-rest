@@ -5,7 +5,6 @@ namespace zhuravljov\yii\rest;
 use Yii;
 use yii\base\BootstrapInterface;
 use yii\base\InvalidConfigException;
-use yii\helpers\Url;
 use yii\web\Application;
 use yii\web\ForbiddenHttpException;
 
@@ -13,6 +12,7 @@ use yii\web\ForbiddenHttpException;
  * Class Module
  *
  * @property \zhuravljov\yii\rest\components\Storage $storage
+ * @property \yii\httpclient\Client $client
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -31,14 +31,16 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
-     * @var string the base URL for rest requests.
-     */
-    public $baseUrl;
-
-    /**
      * @var \zhuravljov\yii\rest\components\Storage|array|string
      */
     private $_storage = 'zhuravljov\yii\rest\components\FileStorage';
+    /**
+     * @var \yii\httpclient\Client|array
+     */
+    private $_client = [
+        'class' => 'yii\httpclient\Client',
+        'baseUrl' => null,
+    ];
 
     /**
      * @inheritdoc
@@ -52,9 +54,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
                 $this->id . '/<action:[\w-]+>' => $this->id . '/default/<action>',
                 $this->id => $this->id . '/default/index',
             ], false);
-            if ($this->baseUrl === null) {
-                $this->baseUrl = Url::base(true) . '/';
-            }
         } else {
             throw new InvalidConfigException('Can use for web application only.');
         }
@@ -131,5 +130,25 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         return $this->_storage;
+    }
+
+    /**
+     * @param \yii\httpclient\Client|array $client
+     */
+    public function setClient($client)
+    {
+        $this->_client = $client;
+    }
+
+    /**
+     * @return \yii\httpclient\Client
+     */
+    public function getClient()
+    {
+        if (!is_object($this->_client)) {
+            $this->_client = Yii::createObject($this->_client);
+        }
+
+        return $this->_client;
     }
 }

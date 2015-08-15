@@ -3,7 +3,6 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
-use yii\httpclient\Client;
 use yii\web\Controller;
 use zhuravljov\yii\rest\models\RequestForm;
 
@@ -22,7 +21,7 @@ class DefaultController extends Controller
         } else {
             $model = $this->module->storage->find($tag);
         }
-        $model->baseUrl = $this->module->baseUrl;
+        $model->baseUrl = $this->module->client->baseUrl;
 
         if (
             $model->load(Yii::$app->request->post()) &&
@@ -73,14 +72,20 @@ class DefaultController extends Controller
      */
     protected function send(RequestForm $model)
     {
-        $url = $model->baseUrl . $model->endpoint;
+        $request = $this->module->client->createRequest();
+        $request->setMethod($model->method);
+
+        $uri = $model->endpoint;
         $params = [];
         foreach ($model->queryKeys as $i => $key) {
             if ($model->queryActives[$i]) {
                 $params[] = $key . '=' . urlencode($model->queryValues[$i]);
             }
         }
-        $url .= '?' . join('&', $params);
+        if ($params) {
+            $uri .= '?' . join('&', $params);
+        }
+        $request->setUrl($uri);
 
         $data = [];
         foreach ($model->bodyKeys as $i => $key) {
@@ -88,6 +93,7 @@ class DefaultController extends Controller
                 $data[$key] = $model->bodyValues[$i];
             }
         }
+        $request->setData($data);
 
         $headers = [];
         foreach ($model->headerKeys as $i => $key) {
@@ -95,20 +101,15 @@ class DefaultController extends Controller
                 $headers[$key] = $model->headerValues[$i];
             }
         }
-
-        $client = new Client();
-        $request = $client->createRequest()
-            ->setMethod($model->method)
-            ->setUrl($url)
-            ->setData($data ?: null)
-            ->setHeaders($headers ?: null);
+        $request->setHeaders($headers);
 
         $begin = microtime(true);
         $response = $request->send();
+        $time = microtime(true) - $begin;
 
         $data = [];
         $data['status'] = $response->getStatusCode();
-        $data['time'] = microtime(true) - $begin;
+        $data['time'] = $time;
         foreach ($response->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             $data['headers'][$name] = $values;
