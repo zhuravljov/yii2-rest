@@ -119,12 +119,11 @@ body {
     left: 0;
     top: 6px;
     bottom: 6px;
-    width: 6px;
+    width: 7px;
+    border-right: 1px solid #fff;
     content: "";
 }
-.request-list  li.active > a:after {
-    display: none;
-}
+.request-list  li.active > a:after,
 .request-list li > a:hover:after {
     top: 0;
     bottom: 0;
