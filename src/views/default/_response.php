@@ -20,7 +20,7 @@ use yii\web\Response;
                 <a href="#response-headers" data-toggle="tab">
                     Response Headers
                     <?= Html::tag('span', count($data['headers']), [
-                        'class' => 'badge' . (!count($data['headers']) ? ' hidden' : '')
+                        'class' => 'counter' . (!count($data['headers']) ? ' hidden' : '')
                     ]) ?>
                 </a>
             </li>

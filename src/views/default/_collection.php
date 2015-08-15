@@ -14,6 +14,7 @@ use yii\helpers\Url;
             <li>
                 <div class="request-list-group">
                     <?= Html::encode($group) ?>
+                    <?= Html::tag('span', count($rows), ['class' => 'counter']) ?>
                 </div>
                 <ul>
                     <?php foreach ($rows as $tag => $row): ?>

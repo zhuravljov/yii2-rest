@@ -29,13 +29,21 @@ if ($model->method) {
                 <li>
                     <a href="#collection" data-toggle="tab">
                         Collection
+                        <?php
+                        $count = array_reduce($collection, function ($sum, $rows) {
+                            return $sum + count($rows);
+                        }, 0);
+                        echo Html::tag('span', $count, [
+                            'class' => 'counter' . (!$count ? ' hidden' : '')
+                        ]);
+                        ?>
                     </a>
                 </li>
                 <li>
                     <a href="#history" data-toggle="tab">
                         History
                         <?= Html::tag('span', count($history), [
-                            'class' => 'badge' . (!count($history) ? ' hidden' : '')
+                            'class' => 'counter' . (!count($history) ? ' hidden' : '')
                         ]) ?>
                     </a>
                 </li>

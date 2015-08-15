@@ -41,7 +41,9 @@ use yii\helpers\Url;
                     </span>
                 </a>
                 <div class="actions">
-                    <?= Html::a('&plus;', ['add-to-collection', 'tag' => $tag]) ?>
+                    <?php if (!$row['in_collection']): ?>
+                        <?= Html::a('&plus;', ['add-to-collection', 'tag' => $tag]) ?>
+                    <?php endif; ?>
                     <?= Html::a('&times;', ['remove-from-history', 'tag' => $tag]) ?>
                 </div>
             </li>

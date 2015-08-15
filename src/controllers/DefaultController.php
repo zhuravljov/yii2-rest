@@ -36,21 +36,29 @@ class DefaultController extends Controller
 
         $model->addNewParamRows();
 
+
+        $history = $this->module->storage->getHistory();
+        $collection = $this->module->storage->getCollection();
+
+        foreach ($history as $tag => &$item) {
+            $item['in_collection'] = isset($collection[$tag]);
+        }
+        unset($item);
+
+        // TODO Grouping will move to the config level
+        $collection = ArrayHelper::group($collection, function ($row) {
+            if (preg_match('|[^/]+|', ltrim($row['endpoint'], '/'), $m)) {
+                return $m[0];
+            } else {
+                return 'common';
+            }
+        });
+
         return $this->render('index', [
             'tag' => $tag,
             'model' => $model,
-            'history' => $this->module->storage->getHistory(),
-            // TODO Grouping will move to the config level
-            'collection' => ArrayHelper::group(
-                $this->module->storage->getCollection(),
-                function ($row) {
-                    if (preg_match('|[^/]+|', ltrim($row['endpoint'], '/'), $m)) {
-                        return $m[0];
-                    } else {
-                        return 'common';
-                    }
-                }
-            ),
+            'history' => $history,
+            'collection' => $collection,
         ]);
     }
 
