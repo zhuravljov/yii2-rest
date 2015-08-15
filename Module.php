@@ -51,8 +51,8 @@ class Module extends \yii\base\Module implements BootstrapInterface
             $app->getUrlManager()->addRules([
                 $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/default/index',
                 $this->id . '/<tag:[0-9a-f]+>/<action:[\w-]+>' => $this->id . '/default/<action>',
-                $this->id . '/<action:[\w-]+>' => $this->id . '/default/<action>',
                 $this->id => $this->id . '/default/index',
+                $this->id . '/<action:[\w-]+>' => $this->id . '/default/<action>',
             ], false);
         } else {
             throw new InvalidConfigException('Can use for web application only.');

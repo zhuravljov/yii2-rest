@@ -10,13 +10,42 @@ use zhuravljov\yii\rest\models\RequestForm;
 /**
  * Class Storage
  *
+ * @property \zhuravljov\yii\rest\Module $module
+ *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
 abstract class Storage extends Object
 {
+    /**
+     * @var \zhuravljov\yii\rest\Module
+     */
+    private $_module;
+    /**
+     * @var array
+     */
     private $_history;
-
+    /**
+     * @var array
+     */
     private $_collection;
+
+    /**
+     * @param \zhuravljov\yii\rest\Module $module
+     * @param array $config
+     */
+    public function __construct($module, $config = [])
+    {
+        $this->_module = $module;
+        parent::__construct($config);
+    }
+
+    /**
+     * @return \zhuravljov\yii\rest\Module
+     */
+    public function getModule()
+    {
+        return $this->_module;
+    }
 
     /**
      * @param string $tag

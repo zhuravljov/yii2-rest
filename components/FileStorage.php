@@ -17,14 +17,10 @@ class FileStorage extends Storage
      */
     public $path = '@runtime';
 
-    /**
-     * @param \zhuravljov\yii\rest\Module $module
-     * @param array $config
-     */
-    public function __construct($module, $config = [])
+    public function init()
     {
-        parent::__construct($config);
-        $this->path = Yii::getAlias($this->path . '/' .$module->id);
+        parent::init();
+        $this->path = Yii::getAlias($this->path . '/' .$this->module->id);
     }
 
     /**
