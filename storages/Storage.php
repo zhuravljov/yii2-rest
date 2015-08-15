@@ -1,6 +1,6 @@
 <?php
 
-namespace zhuravljov\yii\rest\components;
+namespace zhuravljov\yii\rest\storages;
 
 use Yii;
 use yii\base\Object;

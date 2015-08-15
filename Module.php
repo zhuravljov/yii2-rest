@@ -11,7 +11,7 @@ use yii\web\ForbiddenHttpException;
 /**
  * Class Module
  *
- * @property \zhuravljov\yii\rest\components\Storage $storage
+ * @property \zhuravljov\yii\rest\storages\Storage $storage
  * @property \yii\httpclient\Client $client
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
@@ -31,9 +31,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
-     * @var \zhuravljov\yii\rest\components\Storage|array|string
+     * @var \zhuravljov\yii\rest\storages\Storage|array|string
      */
-    private $_storage = 'zhuravljov\yii\rest\components\FileStorage';
+    private $_storage = 'zhuravljov\yii\rest\storages\FileStorage';
     /**
      * @var \yii\httpclient\Client|array
      */
@@ -113,7 +113,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     }
 
     /**
-     * @param \zhuravljov\yii\rest\components\Storage|array|string $storage
+     * @param \zhuravljov\yii\rest\storages\Storage|array|string $storage
      */
     public function setStorage($storage)
     {
@@ -121,7 +121,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     }
 
     /**
-     * @return \zhuravljov\yii\rest\components\Storage
+     * @return \zhuravljov\yii\rest\storages\Storage
      */
     public function getStorage()
     {
