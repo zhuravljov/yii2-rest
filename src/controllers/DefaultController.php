@@ -40,8 +40,8 @@ class DefaultController extends Controller
         $history = $this->module->storage->getHistory();
         $collection = $this->module->storage->getCollection();
 
-        foreach ($history as $tag => &$item) {
-            $item['in_collection'] = isset($collection[$tag]);
+        foreach ($history as $_tag => &$item) {
+            $item['in_collection'] = isset($collection[$_tag]);
         }
         unset($item);
 
