@@ -105,11 +105,11 @@ class DefaultController extends Controller
 
         $begin = microtime(true);
         $response = $request->send();
-        $time = microtime(true) - $begin;
+        $duration = microtime(true) - $begin;
 
         $data = [];
+        $data['duration'] = $duration;
         $data['status'] = $response->getStatusCode();
-        $data['time'] = $time;
         foreach ($response->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
             $data['headers'][$name] = $values;

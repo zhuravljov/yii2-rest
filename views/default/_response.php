@@ -26,9 +26,9 @@ use yii\web\Response;
             </li>
             <li class="pull-right">
                 <div class="info">
-                    Time:
+                    Duration:
                     <span class="label label-default">
-                        <?= round($data['time'] * 1000) ?> ms
+                        <?= round($data['duration'] * 1000) ?> ms
                     </span>
                 </div>
             </li>

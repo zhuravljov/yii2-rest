@@ -78,6 +78,7 @@ abstract class Storage extends Object
         ]);
         $this->addToHistory($tag, [
             'tag' => $tag,
+            'time' => time(),
             'method' => $model->method,
             'endpoint' => $model->endpoint,
             'status' => $model->response['status'],
