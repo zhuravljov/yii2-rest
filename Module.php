@@ -8,12 +8,11 @@ use yii\base\InvalidConfigException;
 use yii\helpers\Url;
 use yii\web\Application;
 use yii\web\ForbiddenHttpException;
-use zhuravljov\yii\rest\components\Storage;
 
 /**
  * Class Module
  *
- * @property Storage $storage
+ * @property \zhuravljov\yii\rest\components\Storage $storage
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -35,10 +34,11 @@ class Module extends \yii\base\Module implements BootstrapInterface
      * @var string the base URL for rest requests.
      */
     public $baseUrl;
+
     /**
-     * @var string log path
+     * @var \zhuravljov\yii\rest\components\Storage|array|string
      */
-    public $logPath = '@runtime';
+    private $_storage = 'zhuravljov\yii\rest\components\FileStorage';
 
     /**
      * @inheritdoc
@@ -114,19 +114,22 @@ class Module extends \yii\base\Module implements BootstrapInterface
     }
 
     /**
-     * @return Storage
+     * @param \zhuravljov\yii\rest\components\Storage|array|string $storage
+     */
+    public function setStorage($storage)
+    {
+        $this->_storage = $storage;
+    }
+
+    /**
+     * @return \zhuravljov\yii\rest\components\Storage
      */
     public function getStorage()
     {
-        if (!$this->_storage) {
-            $this->_storage = Yii::createObject([
-                'class' => Storage::className(),
-                'module' => $this,
-            ]);
+        if (!is_object($this->_storage)) {
+            $this->_storage = Yii::createObject($this->_storage, [$this]);
         }
 
         return $this->_storage;
     }
-
-    private $_storage;
 }

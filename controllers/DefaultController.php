@@ -5,7 +5,6 @@ namespace zhuravljov\yii\rest\controllers;
 use Yii;
 use yii\httpclient\Client;
 use yii\web\Controller;
-use yii\web\NotFoundHttpException;
 use zhuravljov\yii\rest\models\RequestForm;
 
 class DefaultController extends Controller
@@ -19,17 +18,18 @@ class DefaultController extends Controller
     public function actionIndex($tag = null)
     {
         if ($tag === null) {
-            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
+            $model = new RequestForm();
         } else {
-            $model = $this->find($tag);
+            $model = $this->module->storage->find($tag);
         }
+        $model->baseUrl = $this->module->baseUrl;
 
         if (
             $model->load(Yii::$app->request->post()) &&
             $model->validate()
         ) {
             $this->send($model);
-            $tag = $this->save($model);
+            $tag = $this->module->storage->save($model);
 
             return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
         }
@@ -39,71 +39,33 @@ class DefaultController extends Controller
         return $this->render('index', [
             'tag' => $tag,
             'model' => $model,
-            'collection' => $this->module->getStorage()->getCollectionGroups(),
-            'history' => $this->module->getStorage()->getHistory(),
+            'collection' => $this->module->storage->getCollectionGroups(),
+            'history' => $this->module->storage->getHistory(),
         ]);
     }
 
     public function actionRemoveFromHistory($tag)
     {
-        $this->find($tag);
-        $this->module->getStorage()->removeFromHistory($tag);
+        $this->module->storage->find($tag);
+        $this->module->storage->removeFromHistory($tag);
 
         return $this->redirect(['index']);
     }
 
     public function actionAddToCollection($tag)
     {
-        $this->find($tag);
-        $this->module->getStorage()->addToCollection($tag);
+        $this->module->storage->find($tag);
+        $this->module->storage->addToCollection($tag);
 
         return $this->redirect(['index', 'tag' => $tag]);
     }
 
     public function actionRemoveFromCollection($tag)
     {
-        $this->find($tag);
-        $this->module->getStorage()->removeFromCollection($tag);
+        $this->module->storage->find($tag);
+        $this->module->storage->removeFromCollection($tag);
 
         return $this->redirect(['index']);
-    }
-
-    /**
-     * @param string $tag
-     * @return RequestForm
-     * @throws NotFoundHttpException
-     */
-    protected function find($tag)
-    {
-        if ($data = $this->module->getStorage()->find($tag)) {
-            $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
-            $model->setAttributes($data['request']);
-            $model->response = $data['response'];
-
-            return $model;
-        } else {
-            throw new NotFoundHttpException('Page not found.');
-        }
-    }
-
-    /**
-     * @param RequestForm $model
-     * @return string tag
-     */
-    protected function save(RequestForm $model)
-    {
-        $tag = $this->module->getStorage()->save([
-            'request' => $model->getAttributes(null, ['baseUrl', 'response']),
-            'response' => $model->response,
-        ]);
-        $this->module->getStorage()->addToHistory($tag, [
-            'tag' => $tag,
-            'method' => $model->method,
-            'endpoint' => $model->endpoint,
-            'status' => $model->response['status'],
-        ]);
-
-        return $tag;
     }
 
     /**
