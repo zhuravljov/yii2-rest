@@ -203,7 +203,6 @@ abstract class Storage extends Object
      */
     abstract protected function writeData($tag, array $data);
 
-
     /**
      * @param string $tag
      */
