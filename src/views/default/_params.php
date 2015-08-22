@@ -16,7 +16,7 @@ $i = 1;
 <div id="<?= $id ?>" class="params-list">
     <table class="table">
         <tbody>
-            <?php foreach (array_keys($model->{$keyAttribute}) as $i): ?>
+            <?php foreach (array_keys($model->$keyAttribute) as $i): ?>
             <tr data-index="<?= $i ?>">
                 <td class="column-check">
                     <?= $form->field($model, $activeAttribute . "[$i]")->checkbox(['tabindex' => -1], false) ?>
