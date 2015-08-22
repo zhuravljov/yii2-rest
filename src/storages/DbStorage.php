@@ -25,7 +25,8 @@ class DbStorage extends Storage
      * CREATE TABLE rest (
      *     tag VARCHAR(24) NOT NULL,
      *     module_id VARCHAR(64) NOT NULL,
-     *     data LONGBLOB NOT NULL,
+     *     request LONGBLOB NOT NULL,
+     *     response LONGBLOB NOT NULL,
      *     method VARCHAR(8),
      *     endpoint VARCHAR(128),
      *     status VARCHAR(3),
@@ -47,33 +48,34 @@ class DbStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function readData($tag)
+    protected function readData($tag, &$request, &$response)
     {
-        $raw = (new Query())
-            ->select('data')
+        $query = (new Query())
+            ->select(['request', 'response'])
             ->from($this->tableName)
             ->andWhere(['tag' => $tag])
-            ->andWhere(['module_id' => $this->module->id])
-            ->createCommand($this->db)
-            ->queryScalar();
+            ->andWhere(['module_id' => $this->module->id]);
 
-        if ($raw !== null) {
-            return unserialize($raw);
+        if ($row = $query->one($this->db)) {
+            $request = unserialize($row['request']);
+            $response = unserialize($row['response']);
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
     /**
      * @inheritdoc
      */
-    protected function writeData($tag, array $data)
+    protected function writeData($tag, $request, $response)
     {
         $this->db->createCommand()
             ->insert($this->tableName, [
                 'tag' => $tag,
                 'module_id' => $this->module->id,
-                'data' => serialize($data),
+                'request' => serialize($request),
+                'response' => serialize($response),
             ])
             ->execute();
     }
@@ -96,15 +98,15 @@ class DbStorage extends Storage
      */
     protected function readHistory()
     {
-        $rows = (new Query())
+        $query = (new Query())
             ->select(['tag', 'method', 'endpoint', 'status', 'time' => 'stored_at'])
             ->from($this->tableName)
             ->andWhere(['module_id' => $this->module->id])
             ->andWhere('stored_at IS NOT NULL')
             ->orderBy(['tag' => SORT_ASC])
-            ->indexBy('tag')
-            ->all($this->db);
+            ->indexBy('tag');
 
+        $rows = $query->all($this->db);
         foreach ($rows as &$row) {
             unset($row['tag']);
         }
@@ -116,7 +118,7 @@ class DbStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function writeHistory(array $rows)
+    protected function writeHistory($rows)
     {
         $this->db->transaction(function () use ($rows) {
             $old = $this->readHistory();
@@ -146,15 +148,15 @@ class DbStorage extends Storage
      */
     protected function readCollection()
     {
-        $rows = (new Query())
+        $query = (new Query())
             ->select(['tag', 'method', 'endpoint', 'status', 'time' => 'favorited_at'])
             ->from($this->tableName)
             ->andWhere(['module_id' => $this->module->id])
             ->andWhere('favorited_at IS NOT NULL')
             ->orderBy(['tag' => SORT_ASC])
-            ->indexBy('tag')
-            ->all($this->db);
+            ->indexBy('tag');
 
+        $rows = $query->all($this->db);
         foreach ($rows as &$row) {
             unset($row['tag']);
         }
@@ -166,7 +168,7 @@ class DbStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function writeCollection(array $rows)
+    protected function writeCollection($rows)
     {
         $this->db->transaction(function () use ($rows) {
             $old = $this->readCollection();

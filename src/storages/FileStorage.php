@@ -26,23 +26,29 @@ class FileStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function readData($tag)
+    protected function readData($tag, &$request, &$response)
     {
         $fileName = "/{$this->path}/{$tag}.data";
         if (file_exists($fileName)) {
-            return unserialize(file_get_contents($fileName));
+            $data = unserialize(file_get_contents($fileName));
+            $request = $data['request'];
+            $response = $data['response'];
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
     /**
      * @inheritdoc
      */
-    protected function writeData($tag, array $data)
+    protected function writeData($tag, $request, $response)
     {
         FileHelper::createDirectory($this->path);
-        file_put_contents("/{$this->path}/{$tag}.data", serialize($data));
+        file_put_contents("/{$this->path}/{$tag}.data", serialize([
+            'request' => $request,
+            'response' => $response,
+        ]));
     }
 
     /**
@@ -72,7 +78,7 @@ class FileStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function writeHistory(array $rows)
+    protected function writeHistory($rows)
     {
         FileHelper::createDirectory($this->path);
         file_put_contents("/{$this->path}/history.data", serialize($rows));
@@ -94,7 +100,7 @@ class FileStorage extends Storage
     /**
      * @inheritdoc
      */
-    protected function writeCollection(array $rows)
+    protected function writeCollection($rows)
     {
         FileHelper::createDirectory($this->path);
         file_put_contents("/{$this->path}/collection.data", serialize($rows));

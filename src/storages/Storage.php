@@ -54,10 +54,10 @@ abstract class Storage extends Object
      */
     public function find($tag)
     {
-        if ($data = $this->readData($tag)) {
+        if ($this->readData($tag, $request, $response)) {
             $model = new RequestForm();
-            $model->setAttributes($data['request']);
-            $model->response = $data['response'];
+            $model->setAttributes($request);
+            $model->response = $response;
 
             return $model;
         } else {
@@ -72,10 +72,10 @@ abstract class Storage extends Object
     public function save(RequestForm $model)
     {
         $tag = uniqid();
-        $this->writeData($tag, [
-            'request' => $model->getAttributes(null, ['baseUrl', 'response']),
-            'response' => $model->response,
-        ]);
+        $this->writeData($tag,
+            $model->getAttributes(null, ['baseUrl', 'response']),
+            $model->response
+        );
         $this->addToHistory($tag, [
             'method' => $model->method,
             'endpoint' => $model->endpoint,
@@ -236,15 +236,18 @@ abstract class Storage extends Object
 
     /**
      * @param string $tag
-     * @return array|null
+     * @param array $request
+     * @param array $response
+     * @return boolean
      */
-    abstract protected function readData($tag);
+    abstract protected function readData($tag, &$request, &$response);
 
     /**
      * @param string $tag
-     * @param array $data
+     * @param array $request
+     * @param array $response
      */
-    abstract protected function writeData($tag, array $data);
+    abstract protected function writeData($tag, $request, $response);
 
     /**
      * @param string $tag
@@ -259,7 +262,7 @@ abstract class Storage extends Object
     /**
      * @param array $rows
      */
-    abstract protected function writeHistory(array $rows);
+    abstract protected function writeHistory($rows);
 
     /**
      * @return array
@@ -269,5 +272,5 @@ abstract class Storage extends Object
     /**
      * @param array $rows
      */
-    abstract protected function writeCollection(array $rows);
+    abstract protected function writeCollection($rows);
 }
