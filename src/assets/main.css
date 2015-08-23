@@ -129,7 +129,8 @@ body {
     content: "";
 }
 .request-list  li.active > a:after,
-.request-list li > a:hover:after {
+.request-list li > a:hover:after,
+.request-list li > a:focus:after {
     top: 0;
     bottom: 0;
     border-radius: 4px 0 0 4px;
