@@ -97,10 +97,8 @@ body {
 .request-list li > .actions {
     display: none;
     position: absolute;
-    top: 50%;
-    right: 0;
-    margin-top: -11px;
-    padding-right: 8px;
+    top: 8px;
+    right: 8px;
 }
 .request-list li:hover > .actions {
     display: inherit;
@@ -151,4 +149,16 @@ body {
 .request-list .request-method {
     text-transform: uppercase;
     font-weight: bold;
+}
+.request-list .request-name {
+    display: block;
+    margin-right: 30px;
+}
+.request-list .request-description {
+    display: block;
+    font-size: 70%;
+    color: #333;
+}
+.request-list .active .request-description {
+    color: #fff;
 }

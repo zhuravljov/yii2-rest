@@ -9,7 +9,6 @@ use zhuravljov\yii\rest\models\RequestForm;
 
 class DefaultController extends Controller
 {
-    public $layout = 'main';
     /**
      * @var \zhuravljov\yii\rest\Module
      */

@@ -31,6 +31,8 @@ class RequestForm extends Model
     public $headerValues = [];
     public $headerActives = [];
 
+    public $description;
+
     public $response = [];
 
     public function rules()
@@ -48,6 +50,8 @@ class RequestForm extends Model
             [['queryKeys', 'bodyKeys', 'headerKeys'], 'each', 'rule' => ['string']],
             [['queryValues', 'bodyValues', 'headerValues'], 'each', 'rule' => ['string']],
             [['queryActives', 'bodyActives', 'headerActives'], 'each', 'rule' => ['boolean']],
+
+            ['description', 'string'],
         ];
     }
 
@@ -175,6 +179,7 @@ class RequestForm extends Model
             'bodyValues' => 'Value',
             'headerKeys' => 'Header',
             'headerValues' => 'Value',
+            'description' => 'Description',
         ];
     }
 

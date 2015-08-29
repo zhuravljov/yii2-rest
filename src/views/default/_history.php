@@ -39,6 +39,11 @@ use yii\helpers\Url;
                             <?= Html::encode($row['endpoint']) ?>
                         </span>
                     </span>
+                    <?php if (!empty($row['description'])): ?>
+                        <span class="request-description">
+                            <?= Html::encode($row['description']) ?>
+                        </span>
+                    <?php endif; ?>
                 </a>
                 <div class="actions">
                     <?php if (!$row['in_collection']): ?>
