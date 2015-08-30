@@ -112,3 +112,121 @@ $('#history-search').keyup(function() {
 
 JS
 );
+$this->registerCss(<<<'CSS'
+
+.tab-content {
+    margin-top: 15px;
+}
+.counter:before { content: "("; }
+.counter:after{ content: ")"; }
+
+CSS
+);
+$this->registerCss(<<<'CSS'
+
+.request-list,
+.request-list ul {
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.request-list  li {
+    position: relative;
+    display: block;
+}
+.request-list .request-list-group {
+    padding: 10px 15px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-bottom: 2px solid #999;
+}
+.request-list li > a {
+    position: relative;
+    display: block;
+    padding: 10px 15px;
+    border-radius: 4px;
+}
+.request-list li > a:hover,
+.request-list li > a:focus {
+    text-decoration: none;
+    background-color: #eee;
+}
+.request-list li.active > a {
+    color: #fff;
+    background-color: #337ab7;
+}
+
+.request-list li > .actions {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+.request-list li:hover > .actions {
+    display: inherit;
+}
+.request-list li > .actions > a {
+    padding: 0 2px;
+    font-size: 21px;
+    font-weight: bold;
+    line-height: 1;
+    color: #000;
+    text-decoration: none;
+    opacity: .2;
+}
+.request-list li > .actions > a:hover {
+    text-decoration: none;
+    opacity: .5;
+}
+
+.request-list li > a:after {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    bottom: 6px;
+    width: 7px;
+    border-right: 1px solid #fff;
+    content: "";
+}
+.request-list  li.active > a:after,
+.request-list li > a:hover:after,
+.request-list li > a:focus:after {
+    top: 0;
+    bottom: 0;
+    border-radius: 4px 0 0 4px;
+}
+.request-list li.success > a:after {
+    background-color: #5cb85c;
+}
+.request-list li.info > a:after {
+    background-color: #5bc0de;
+}
+.request-list li.warning > a:after {
+    background-color: #f0ad4e;
+}
+.request-list li.danger > a:after {
+    background-color: #d9534f;
+}
+
+.request-list .request-method {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+.request-list .request-name {
+    display: block;
+    margin-right: 30px;
+}
+.request-list .request-description {
+    display: block;
+    font-size: 70%;
+    color: #333;
+}
+.request-list .active .request-description {
+    color: #fff;
+}
+
+CSS
+);
+
+

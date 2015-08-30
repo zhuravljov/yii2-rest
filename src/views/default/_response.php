@@ -103,3 +103,18 @@ if (window.localStorage) {
 
 JS
 );
+$this->registerCss(<<<'CSS'
+
+.nav-tabs > li > .info {
+    position: relative;
+    display: block;
+    padding: 10px 0 10px 15px;
+    font-weight: bold;
+}
+.nav-tabs > li > .info .label {
+    white-space: normal;
+    font-size: 85%;
+}
+
+CSS
+);
