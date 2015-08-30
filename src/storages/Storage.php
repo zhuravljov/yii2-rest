@@ -4,8 +4,8 @@ namespace zhuravljov\yii\rest\storages;
 
 use Yii;
 use yii\base\Object;
-use yii\web\NotFoundHttpException;
 use zhuravljov\yii\rest\models\RequestForm;
+use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class Storage
@@ -49,38 +49,53 @@ abstract class Storage extends Object
 
     /**
      * @param string $tag
-     * @return RequestForm
-     * @throws NotFoundHttpException
+     * @return boolean
      */
-    public function find($tag)
+    public function exists($tag)
+    {
+        return $this->readData($tag, $request, $response);
+    }
+
+    /**
+     * @param string $tag
+     * @param RequestForm $model
+     * @param ResponseRecord $record
+     * @return boolean
+     */
+    public function load($tag, RequestForm $model, ResponseRecord $record)
     {
         if ($this->readData($tag, $request, $response)) {
-            $model = new RequestForm();
             $model->setAttributes($request);
-            $model->response = $response;
+            $record->status = $response['status'];
+            $record->duration = $response['duration'];
+            $record->headers = $response['headers'];
+            $record->content = $response['content'];
 
-            return $model;
+            return true;
         } else {
-            throw new NotFoundHttpException('Request not found.');
+            return false;
         }
     }
 
     /**
      * @param RequestForm $model
-     * @return string tag
+     * @param ResponseRecord $record
+     * @return string
      */
-    public function save(RequestForm $model)
+    public function save(RequestForm $model, ResponseRecord $record)
     {
         $tag = uniqid();
-        $this->writeData($tag,
-            $model->getAttributes(null, ['baseUrl', 'response']),
-            $model->response
+
+        $this->writeData(
+            $tag,
+            $model->getAttributes(null, ['baseUrl']),
+            get_object_vars($record)
         );
         $this->addToHistory($tag, [
             'method' => $model->method,
             'endpoint' => $model->endpoint,
             'description' => $model->description,
-            'status' => $model->response['status'],
+            'status' => $record->status,
             'time' => time(),
         ]);
 
@@ -142,32 +157,38 @@ abstract class Storage extends Object
     /**
      * @param string $tag
      * @param array $data
+     * @return boolean
      */
     public function addToHistory($tag, array $data)
     {
         $this->getHistory();
         $this->_history[$tag] = $data;
         $this->writeHistory($this->_history);
+
+        return true;
     }
 
     /**
      * @param string $tag
+     * @return boolean
      */
     public function removeFromHistory($tag)
     {
         $this->getHistory();
-        if (isset($this->_history[$tag])) {
+        if ($result = isset($this->_history[$tag])) {
             unset($this->_history[$tag]);
             $this->writeHistory($this->_history);
         }
         if (!$this->getCollection($tag)) {
             $this->removeData($tag);
         }
+
+        return $result;
     }
 
     /**
      * @param string $tag
-     * @throws NotFoundHttpException
+     * @return boolean
      */
     public function addToCollection($tag)
     {
@@ -176,63 +197,29 @@ abstract class Storage extends Object
             $this->getCollection();
             $this->_collection[$tag] = $data;
             $this->writeCollection($this->_collection);
+
+            return true;
         } else {
-            throw new NotFoundHttpException('Request not found.');
+            return false;
         }
     }
 
     /**
      * @param string $tag
+     * @return boolean
      */
     public function removeFromCollection($tag)
     {
         $this->getCollection();
-        if (isset($this->_collection[$tag])) {
+        if ($result = isset($this->_collection[$tag])) {
             unset($this->_collection[$tag]);
             $this->writeCollection($this->_collection);
         }
         if (!$this->getHistory($tag)) {
             $this->removeData($tag);
         }
-    }
 
-    /**
-     * @param string $pattern
-     * @param string $default
-     * @return array
-     * @deprecated
-     */
-    public function getCollectionGroups($pattern = '([^/]+)', $default = 'common')
-    {
-        $groups = [];
-
-        foreach ($this->getCollection() as $tag => $row) {
-            if (preg_match("|$pattern|", $row['endpoint'], $m)) {
-                $key = $m[1];
-            } else {
-                $key = $default;
-            }
-            $groups[$key][$tag] = $row;
-        }
-        ksort($groups);
-
-        $order = array_flip(['get', 'post', 'put', 'delete']);
-        foreach ($groups as &$rows) {
-            uasort($rows, function ($row1, $row2) use ($order) {
-                $ind1 = isset($order[$row1['method']]) ? $order[$row1['method']] : null;
-                $ind2 = isset($order[$row2['method']]) ? $order[$row2['method']] : null;
-                if ($ind1 < $ind2) {
-                    return -1;
-                } elseif ($ind1 > $ind2) {
-                    return 1;
-                } else {
-                    return strcmp($row1['endpoint'], $row2['endpoint']);
-                }
-            });
-        }
-        unset($rows);
-
-        return $groups;
+        return $result;
     }
 
     /**

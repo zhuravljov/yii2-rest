@@ -11,7 +11,7 @@ use zhuravljov\yii\rest\models\RequestForm;
 ?>
 <div class="rest-request">
     <?php $form = ActiveForm::begin([
-        'action' => ['index'],
+        'action' => ['request'],
         'fieldConfig' => [
             'labelOptions' => ['class' => 'control-label sr-only'],
         ],

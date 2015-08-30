@@ -30,7 +30,7 @@ use yii\helpers\Url;
             }
             ?>
             <li <?= Html::renderTagAttributes($options) ?>>
-                <a href="<?= Url::to(['index', 'tag' => $tag]) ?>">
+                <a href="<?= Url::to(['request', 'tag' => $tag]) ?>">
                     <span class="request-name">
                         <span class="request-method">
                             <?= Html::encode($row['method']) ?>

@@ -23,7 +23,7 @@ $asset = \zhuravljov\yii\rest\Asset::register($this);
 <?php
 NavBar::begin([
     'brandLabel' => 'REST Client',
-    'brandUrl' => ['default/index'],
+    'brandUrl' => ['default/request'],
     'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
 ]);
 echo Nav::widget([

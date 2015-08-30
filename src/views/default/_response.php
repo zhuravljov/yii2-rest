@@ -4,11 +4,11 @@ use yii\web\Response;
 
 /**
  * @var \yii\web\View $this
- * @var array $data
+ * @var \zhuravljov\yii\rest\models\ResponseRecord $record
  */
 ?>
 <div id="response" class="rest-response">
-    <?php if ($data): ?>
+    <?php if ($record->status): ?>
 
         <ul class="nav nav-tabs">
             <li>
@@ -19,8 +19,8 @@ use yii\web\Response;
             <li>
                 <a href="#response-headers" data-toggle="tab">
                     Response Headers
-                    <?= Html::tag('span', count($data['headers']), [
-                        'class' => 'counter' . (!count($data['headers']) ? ' hidden' : '')
+                    <?= Html::tag('span', count($record->headers), [
+                        'class' => 'counter' . (!count($record->headers) ? ' hidden' : '')
                     ]) ?>
                 </a>
             </li>
@@ -28,7 +28,7 @@ use yii\web\Response;
                 <div class="info">
                     Duration:
                     <span class="label label-default">
-                        <?= round($data['duration'] * 1000) ?> ms
+                        <?= round($record->duration * 1000) ?> ms
                     </span>
                 </div>
             </li>
@@ -37,19 +37,19 @@ use yii\web\Response;
                     Status:
                     <?php
                     $class = 'label';
-                    if ($data['status'] < 300) {
+                    if ($record->status < 300) {
                         $class .= ' label-success';
-                    } elseif ($data['status'] < 400) {
+                    } elseif ($record->status < 400) {
                         $class .= ' label-info';
-                    } elseif ($data['status'] < 500) {
+                    } elseif ($record->status < 500) {
                         $class .= ' label-warning';
                     } else {
                         $class .= ' label-danger';
                     }
                     ?>
                     <span class="<?= $class ?>">
-                        <?= Html::encode($data['status']) ?>
-                        <?= isset(Response::$httpStatuses[$data['status']]) ? Response::$httpStatuses[$data['status']] : '' ?>
+                        <?= Html::encode($record->status) ?>
+                        <?= isset(Response::$httpStatuses[$record->status]) ? Response::$httpStatuses[$record->status] : '' ?>
                     </span>
                 </div>
             </li>
@@ -59,7 +59,7 @@ use yii\web\Response;
         <div class="tab-content">
 
             <div id="response-body" class="tab-pane">
-                <pre><?= Html::encode($data['content']) ?></pre>
+                <pre><?= Html::encode($record->content) ?></pre>
             </div><!-- #response-body -->
 
             <div id="response-headers" class="tab-pane">
@@ -71,7 +71,7 @@ use yii\web\Response;
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($data['headers'] as $name => $values): ?>
+                        <?php foreach ($record->headers as $name => $values): ?>
                             <?php foreach ($values as $value): ?>
                                 <tr>
                                     <th><?= Html::encode($name) ?></th>

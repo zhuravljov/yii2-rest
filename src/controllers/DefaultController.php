@@ -4,8 +4,10 @@ namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use zhuravljov\yii\rest\helpers\ArrayHelper;
 use zhuravljov\yii\rest\models\RequestForm;
+use zhuravljov\yii\rest\models\ResponseRecord;
 
 class DefaultController extends Controller
 {
@@ -13,24 +15,31 @@ class DefaultController extends Controller
      * @var \zhuravljov\yii\rest\Module
      */
     public $module;
+    /**
+     * @inheritdoc
+     */
+    public $defaultAction = 'request';
 
-    public function actionIndex($tag = null)
+    public function actionRequest($tag = null)
     {
-        if ($tag === null) {
-            $model = new RequestForm();
-        } else {
-            $model = $this->module->storage->find($tag);
+        $model = new RequestForm(['baseUrl' => $this->module->client->baseUrl]);
+        $record = new ResponseRecord();
+
+        if (
+            $tag !== null &&
+            !$this->module->storage->load($tag, $model, $record)
+        ) {
+            throw new NotFoundHttpException('Request not found.');
         }
-        $model->baseUrl = $this->module->client->baseUrl;
 
         if (
             $model->load(Yii::$app->request->post()) &&
             $model->validate()
         ) {
-            $this->send($model);
-            $tag = $this->module->storage->save($model);
+            $record = $this->send($model);
+            $tag = $this->module->storage->save($model, $record);
 
-            return $this->redirect(['index', 'tag' => $tag, '#' => 'response']);
+            return $this->redirect(['request', 'tag' => $tag, '#' => 'response']);
         }
 
         $model->addNewParamRows();
@@ -43,7 +52,6 @@ class DefaultController extends Controller
             $item['in_collection'] = isset($collection[$_tag]);
         }
         unset($item);
-
         // TODO Grouping will move to the config level
         $collection = ArrayHelper::group($collection, function ($row) {
             if (preg_match('|[^/]+|', ltrim($row['endpoint'], '/'), $m)) {
@@ -53,9 +61,10 @@ class DefaultController extends Controller
             }
         });
 
-        return $this->render('index', [
+        return $this->render('request', [
             'tag' => $tag,
             'model' => $model,
+            'record' => $record,
             'history' => $history,
             'collection' => $collection,
         ]);
@@ -63,30 +72,40 @@ class DefaultController extends Controller
 
     public function actionRemoveFromHistory($tag)
     {
-        $this->module->storage->find($tag);
-        $this->module->storage->removeFromHistory($tag);
+        if ($this->module->storage->exists($tag)) {
+            $this->module->storage->removeFromHistory($tag);
 
-        return $this->redirect(['index']);
+            return $this->redirect(['request']);
+        } else {
+            throw new NotFoundHttpException('Request not found.');
+        }
     }
 
     public function actionAddToCollection($tag)
     {
-        $this->module->storage->find($tag);
-        $this->module->storage->addToCollection($tag);
+        if ($this->module->storage->exists($tag)) {
+            $this->module->storage->addToCollection($tag);
 
-        return $this->redirect(['index', 'tag' => $tag]);
+            return $this->redirect(['request', 'tag' => $tag]);
+        } else {
+            throw new NotFoundHttpException('Request not found.');
+        }
     }
 
     public function actionRemoveFromCollection($tag)
     {
-        $this->module->storage->find($tag);
-        $this->module->storage->removeFromCollection($tag);
+        if ($this->module->storage->exists($tag)) {
+            $this->module->storage->removeFromCollection($tag);
 
-        return $this->redirect(['index']);
+            return $this->redirect(['request']);
+        } else {
+            throw new NotFoundHttpException('Request not found.');
+        }
     }
 
     /**
      * @param RequestForm $model
+     * @return ResponseRecord
      */
     protected function send(RequestForm $model)
     {
@@ -125,15 +144,15 @@ class DefaultController extends Controller
         $response = $request->send();
         $duration = microtime(true) - $begin;
 
-        $data = [];
-        $data['duration'] = $duration;
-        $data['status'] = $response->getStatusCode();
+        $record = new ResponseRecord();
+        $record->status = $response->getStatusCode();
+        $record->duration = $duration;
         foreach ($response->getHeaders() as $name => $values) {
             $name = str_replace(' ', '-', ucwords(str_replace('-', ' ', $name)));
-            $data['headers'][$name] = $values;
+            $record->headers[$name] = $values;
         }
-        $data['content'] = $response->getContent();
+        $record->content = $response->getContent();
 
-        $model->response = $data;
+        return $record;
     }
 }

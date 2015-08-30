@@ -33,8 +33,6 @@ class RequestForm extends Model
 
     public $description;
 
-    public $response = [];
-
     public function rules()
     {
         return [

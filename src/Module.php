@@ -53,9 +53,9 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         if ($app instanceof Application) {
             $app->getUrlManager()->addRules([
-                $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/default/index',
+                $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/default/request',
                 $this->id . '/<tag:[0-9a-f]+>/<action:[\w-]+>' => $this->id . '/default/<action>',
-                $this->id => $this->id . '/default/index',
+                $this->id => $this->id . '/default/request',
                 $this->id . '/<action:[\w-]+>' => $this->id . '/default/<action>',
             ], false);
         } else {
