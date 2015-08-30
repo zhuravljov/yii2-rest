@@ -22,7 +22,7 @@ class DefaultController extends Controller
 
     public function actionRequest($tag = null)
     {
-        $model = new RequestForm(['baseUrl' => $this->module->client->baseUrl]);
+        $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
         $record = new ResponseRecord();
 
         if (
@@ -109,7 +109,12 @@ class DefaultController extends Controller
      */
     protected function send(RequestForm $model)
     {
-        $request = $this->module->client->createRequest();
+        /** @var \yii\httpclient\Client $client */
+        $client = Yii::createObject($this->module->clientConfig, [
+            'baseUrl' => $this->module->baseUrl,
+        ]);
+
+        $request = $client->createRequest();
         $request->setMethod($model->method);
 
         $uri = $model->endpoint;

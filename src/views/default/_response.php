@@ -7,7 +7,7 @@ use yii\web\Response;
  * @var \zhuravljov\yii\rest\models\ResponseRecord $record
  */
 ?>
-<div id="response" class="rest-response">
+<div id="response" class="rest-default-request-response">
     <?php if ($record->status): ?>
 
         <ul class="nav nav-tabs">

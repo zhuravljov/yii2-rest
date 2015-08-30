@@ -16,7 +16,7 @@ if ($model->method) {
     $this->title = 'New Request';
 }
 ?>
-<div class="rest-default-index">
+<div class="rest-default-request">
     <div class="row">
         <div class="col-lg-9">
 

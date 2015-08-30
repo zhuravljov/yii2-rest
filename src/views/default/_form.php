@@ -9,7 +9,7 @@ use zhuravljov\yii\rest\models\RequestForm;
  * @var ActiveForm $form
  */
 ?>
-<div class="rest-request">
+<div class="rest-default-request-form">
     <?php $form = ActiveForm::begin([
         'action' => ['request'],
         'fieldConfig' => [

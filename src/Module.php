@@ -12,7 +12,6 @@ use yii\web\ForbiddenHttpException;
  * Class Module
  *
  * @property \zhuravljov\yii\rest\storages\Storage $storage
- * @property \yii\httpclient\Client $client
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
@@ -35,16 +34,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
+     * @var string base request URL.
+     */
+    public $baseUrl;
+    /**
+     * @var array http client object configuration.
+     */
+    public $clientConfig = 'yii\httpclient\Client';
+    /**
      * @var \zhuravljov\yii\rest\storages\Storage|array|string
      */
     private $_storage = 'zhuravljov\yii\rest\storages\FileStorage';
-    /**
-     * @var \yii\httpclient\Client|array
-     */
-    private $_client = [
-        'class' => 'yii\httpclient\Client',
-        'baseUrl' => null,
-    ];
 
     /**
      * @inheritdoc
@@ -134,25 +134,5 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         return $this->_storage;
-    }
-
-    /**
-     * @param \yii\httpclient\Client|array $client
-     */
-    public function setClient($client)
-    {
-        $this->_client = $client;
-    }
-
-    /**
-     * @return \yii\httpclient\Client
-     */
-    public function getClient()
-    {
-        if (!is_object($this->_client)) {
-            $this->_client = Yii::createObject($this->_client);
-        }
-
-        return $this->_client;
     }
 }
