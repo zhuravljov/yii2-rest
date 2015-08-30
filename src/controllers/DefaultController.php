@@ -110,9 +110,8 @@ class DefaultController extends Controller
     protected function send(RequestForm $model)
     {
         /** @var \yii\httpclient\Client $client */
-        $client = Yii::createObject($this->module->clientConfig, [
-            'baseUrl' => $this->module->baseUrl,
-        ]);
+        $client = Yii::createObject($this->module->clientConfig);
+        $client->baseUrl = $this->module->baseUrl;
 
         $request = $client->createRequest();
         $request->setMethod($model->method);

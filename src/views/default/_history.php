@@ -10,7 +10,7 @@ use yii\helpers\Url;
 ?>
 <div class="rest-default-history">
 
-    <ul id="history-list2" class="rest-default-history">
+    <ul id="history-list" class="request-list">
         <?php foreach (array_reverse($items) as $tag => $row): ?>
             <?php
             $options = ['data-tag' => $tag];
