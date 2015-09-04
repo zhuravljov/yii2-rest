@@ -20,7 +20,7 @@ class Module extends \yii\base\Module implements BootstrapInterface
     /**
      * @inheritdoc
      */
-    public $layout = 'main';
+    public $layout = 'one';
     /**
      * @inheritdoc
      */
