@@ -12,6 +12,11 @@ use zhuravljov\yii\rest\models\ResponseEvent;
 use zhuravljov\yii\rest\models\ResponseRecord;
 use zhuravljov\yii\rest\Module;
 
+/**
+ * Class DefaultController
+ *
+ * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ */
 class DefaultController extends Controller
 {
     /**

@@ -4,6 +4,11 @@ namespace zhuravljov\yii\rest;
 
 use yii\web\AssetBundle;
 
+/**
+ * Class Asset
+ *
+ * @author Roman Zhuravlev <zhuravljov@gmail.com>
+ */
 class Asset extends AssetBundle
 {
     public $sourcePath = '@zhuravljov/yii/rest/assets';
