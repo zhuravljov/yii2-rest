@@ -6,8 +6,11 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use zhuravljov\yii\rest\helpers\ArrayHelper;
+use zhuravljov\yii\rest\models\RequestEvent;
 use zhuravljov\yii\rest\models\RequestForm;
+use zhuravljov\yii\rest\models\ResponseEvent;
 use zhuravljov\yii\rest\models\ResponseRecord;
+use zhuravljov\yii\rest\Module;
 
 class DefaultController extends Controller
 {
@@ -109,6 +112,10 @@ class DefaultController extends Controller
      */
     protected function send(RequestForm $model)
     {
+        $this->module->trigger(Module::EVENT_ON_REQUEST, new RequestEvent([
+            'form' => $model,
+        ]));
+
         /** @var \yii\httpclient\Client $client */
         $client = Yii::createObject($this->module->clientConfig);
         $client->baseUrl = $this->module->baseUrl;
@@ -156,6 +163,11 @@ class DefaultController extends Controller
             $record->headers[$name] = $values;
         }
         $record->content = $response->getContent();
+
+        $this->module->trigger(Module::EVENT_ON_RESPONSE, new ResponseEvent([
+            'form' => $model,
+            'record' => $record,
+        ]));
 
         return $record;
     }

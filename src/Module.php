@@ -18,6 +18,15 @@ use yii\web\ForbiddenHttpException;
 class Module extends \yii\base\Module implements BootstrapInterface
 {
     /**
+     * @event models\RequestEvent an event raised before sending request.
+     */
+    const EVENT_ON_REQUEST = 'onRequest';
+    /**
+     * @event models\ResponseEvent an event raised after sending request and after obtaining response.
+     */
+    const EVENT_ON_RESPONSE = 'onResponse';
+
+    /**
      * @inheritdoc
      */
     public $layout = 'one';
