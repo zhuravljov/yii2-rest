@@ -55,6 +55,15 @@ HTML
             </div>
         </div>
 
+        <?= $form->field($model, 'description', [
+            'options' => [
+                'class' => 'form-group form-group-sm',
+            ],
+        ])->textarea([
+            'placeholder' => 'This is description of the request. It show in collection and history.',
+            'rows' => 1,
+        ]) ?>
+
         <ul class="nav nav-tabs">
             <?php
             $queryCount = count($model->queryKeys) - 1;
@@ -82,14 +91,6 @@ HTML
                     Headers
                     <?= Html::tag('span', $headersCount, [
                         'class' => 'badge' . (!$headersCount ? ' hidden' : '')
-                    ]) ?>
-                </a>
-            </li>
-            <li>
-                <a href="#request-description" data-toggle="tab" tabindex="-1">
-                    Description
-                    <?= Html::tag('span', 'Yes', [
-                        'class' => 'counter' . (empty($model->description) ? ' hidden' : '')
                     ]) ?>
                 </a>
             </li>
@@ -126,13 +127,6 @@ HTML
                     'activeAttribute' => 'headerActives',
                 ]) ?>
             </div><!-- #request-headers -->
-
-            <div id="request-description" class="tab-pane">
-                <?= $form->field($model, 'description')->textarea([
-                    'placeholder' => 'This is description of the request. It show in collection and history.',
-                    'rows' => 5,
-                ]) ?>
-            </div><!-- #request-description -->
         </div>
 
     <?php ActiveForm::end() ?>
@@ -152,9 +146,6 @@ $('a[href=#request-body]').on('shown.bs.tab', function() {
 $('a[href=#request-headers]').on('shown.bs.tab', function() {
     inputSenderTab.val(3);
     $('#request-headers').find(':text').first().focus();
-});
-$('a[href=#request-description]').on('shown.bs.tab', function() {
-    $('#request-description').find('textarea').first().focus();
 });
 
 JS

@@ -10,3 +10,6 @@ body {
     background: url(yii-logo.png) 15px center no-repeat;
     padding-left: 50px;
 }
+textarea {
+    resize: vertical;
+}
