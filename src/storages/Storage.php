@@ -145,11 +145,13 @@ abstract class Storage extends Object
     private function compareCollection($row1, $row2)
     {
         $methods = ['get', 'post', 'put', 'delete'];
-        if ($result = array_search($row1['method'], $methods) - array_search($row2['method'], $methods)) {
-            return $result; // 1. Order by methods
-        } else if ($result = strcmp($row1['endpoint'], $row2['endpoint'])) {
+        if ($result = strcmp($row1['endpoint'], $row2['endpoint'])) {
             return $result; // 2. Order by endpoints
-        } else {
+        }
+        elseif ($result = array_search($row1['method'], $methods) - array_search($row2['method'], $methods)) {
+            return $result; // 2. Order by methods
+        }
+        else {
             return $row1['time'] - $row2['time']; // 3. Order by time
         }
     }
