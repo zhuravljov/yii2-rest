@@ -51,10 +51,17 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $clientConfig = 'yii\httpclient\Client';
     /**
+     * @var array
+     */
+    public $formatters = [
+        'application/json' => 'zhuravljov\yii\rest\formatters\JsonFormatter',
+        'application/xml' => 'zhuravljov\yii\rest\formatters\XmlFormatter',
+        'text/html' => 'zhuravljov\yii\rest\formatters\HtmlFormatter',
+    ];
+    /**
      * @var \zhuravljov\yii\rest\storages\Storage|array|string
      */
     private $_storage = 'zhuravljov\yii\rest\storages\FileStorage';
-
     /**
      * @inheritdoc
      */

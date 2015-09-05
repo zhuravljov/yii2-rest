@@ -9,7 +9,7 @@ use yii\helpers\Html;
  * @var string $content
  */
 
-$asset = \zhuravljov\yii\rest\Asset::register($this);
+$asset = \zhuravljov\yii\rest\RestAsset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
