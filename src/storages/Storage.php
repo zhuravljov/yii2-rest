@@ -144,7 +144,7 @@ abstract class Storage extends Object
 
     private function compareCollection($row1, $row2)
     {
-        $methods = ['get', 'post', 'put', 'delete'];
+        $methods = array_keys(RequestForm::methodLabels());
         if ($result = strcmp($row1['endpoint'], $row2['endpoint'])) {
             return $result; // 2. Order by endpoints
         }

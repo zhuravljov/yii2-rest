@@ -37,7 +37,7 @@ class RequestForm extends Model
     {
         return [
             ['method', 'required'],
-            ['method', 'in', 'range' => array_keys($this->methodLabels())],
+            ['method', 'in', 'range' => array_keys(static::methodLabels())],
 
             ['endpoint', 'string'],
             ['endpoint', 'validateEndpoint'],
@@ -181,13 +181,16 @@ class RequestForm extends Model
         ];
     }
 
-    public function methodLabels()
+    public static function methodLabels()
     {
         return [
             'get' => 'GET',
             'post' => 'POST',
             'put' => 'PUT',
+            'patch' => 'PATCH',
             'delete' => 'DELETE',
+            'head' => 'HEAD',
+            'options' => 'OPTIONS',
         ];
     }
 }
