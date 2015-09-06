@@ -27,7 +27,7 @@ use zhuravljov\yii\rest\models\RequestForm;
 
                 <?= $form->field($model, 'method', [
                     'options' => ['class' => 'form-group form-group-lg'],
-                ])->dropDownList($model->methodLabels()) ?>
+                ])->dropDownList(RequestForm::methodLabels()) ?>
 
             </div>
             <div class="col-sm-10">
