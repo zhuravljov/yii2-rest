@@ -4,6 +4,7 @@ use yii\helpers\Html;
 /**
  * @var \yii\web\View $this
  * @var string $tag
+ * @var string $baseUrl
  * @var \zhuravljov\yii\rest\models\RequestForm $model
  * @var \zhuravljov\yii\rest\models\ResponseRecord $record
  * @var array $history
@@ -20,8 +21,13 @@ if ($model->method) {
     <div class="row">
         <div class="col-lg-9">
 
-            <?= $this->render('_form', ['model' => $model]) ?>
-            <?= $this->render('_response', ['record' => $record]) ?>
+            <?= $this->render('_form', [
+                'baseUrl' => $baseUrl,
+                'model' => $model,
+            ]) ?>
+            <?= $this->render('_response', [
+                'record' => $record,
+            ]) ?>
 
         </div>
         <div class="col-lg-3">

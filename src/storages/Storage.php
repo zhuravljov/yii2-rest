@@ -85,12 +85,7 @@ abstract class Storage extends Object
     public function save(RequestForm $model, ResponseRecord $record)
     {
         $tag = uniqid();
-
-        $this->writeData(
-            $tag,
-            $model->getAttributes(null, ['baseUrl']),
-            get_object_vars($record)
-        );
+        $this->writeData($tag, $model->getAttributes(), get_object_vars($record));
         $this->addToHistory($tag, [
             'method' => $model->method,
             'endpoint' => $model->endpoint,

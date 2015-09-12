@@ -30,7 +30,8 @@ class DefaultController extends Controller
 
     public function actionRequest($tag = null)
     {
-        $model = new RequestForm(['baseUrl' => $this->module->baseUrl]);
+        /** @var RequestForm $model */
+        $model = Yii::createObject(RequestForm::className());
         $record = new ResponseRecord();
 
         if (
@@ -71,6 +72,7 @@ class DefaultController extends Controller
 
         return $this->render('request', [
             'tag' => $tag,
+            'baseUrl' => rtrim($this->module->baseUrl, '/') . '/',
             'model' => $model,
             'record' => $record,
             'history' => $history,

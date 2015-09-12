@@ -12,8 +12,6 @@ use yii\validators\Validator;
  */
 class RequestForm extends Model
 {
-    public $baseUrl;
-
     public $method;
     public $endpoint;
 
@@ -55,7 +53,7 @@ class RequestForm extends Model
 
     public function validateEndpoint()
     {
-        $url = $this->baseUrl . $this->endpoint;
+        $url = 'http://example.com/' . $this->endpoint;
         $validator = Validator::createValidator('url', $this, []);
         if ($validator->validate($url, $error)) {
             // Crop fragment
