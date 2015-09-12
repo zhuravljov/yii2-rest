@@ -51,7 +51,7 @@ class DefaultController extends Controller
             return $this->redirect(['request', 'tag' => $tag, '#' => 'response']);
         }
 
-        $model->addNewParamRows();
+        $model->addEmptyRows();
 
 
         $history = $this->module->storage->getHistory();
@@ -127,39 +127,13 @@ class DefaultController extends Controller
         $client = Yii::createObject($this->module->clientConfig);
         $client->baseUrl = $this->module->baseUrl;
 
-        $request = $client->createRequest();
-        $request->setMethod($model->method);
-
-        $uri = $model->endpoint;
-        $params = [];
-        foreach ($model->queryKeys as $i => $key) {
-            if ($model->queryActives[$i]) {
-                $params[] = $key . '=' . urlencode($model->queryValues[$i]);
-            }
-        }
-        if ($params) {
-            $uri .= '?' . join('&', $params);
-        }
-        $request->setUrl($uri);
-
-        $data = [];
-        foreach ($model->bodyKeys as $i => $key) {
-            if ($model->bodyActives[$i]) {
-                $data[$key] = $model->bodyValues[$i];
-            }
-        }
-        $request->setData($data);
-
-        $headers = [];
-        foreach ($model->headerKeys as $i => $key) {
-            if ($model->headerActives[$i]) {
-                $headers[$key] = $model->headerValues[$i];
-            }
-        }
-        $request->setHeaders($headers);
-
         $begin = microtime(true);
-        $response = $request->send();
+        $response = $client->createRequest()
+            ->setMethod($model->method)
+            ->setUrl($model->getUri())
+            ->setData($model->getBodyParams())
+            ->setHeaders($model->getHeaders())
+            ->send();
         $duration = microtime(true) - $begin;
 
         $record = new ResponseRecord();

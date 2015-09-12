@@ -44,6 +44,7 @@ class RequestForm extends Model
             ['tab', 'in', 'range' => [1, 2, 3]],
 
             [['queryKeys', 'bodyKeys', 'headerKeys'], 'each', 'rule' => ['string']],
+            ['headerKeys', 'each', 'rule' => ['trim']],
             [['queryValues', 'bodyValues', 'headerValues'], 'each', 'rule' => ['string']],
             [['queryActives', 'bodyActives', 'headerActives'], 'each', 'rule' => ['boolean']],
 
@@ -64,16 +65,9 @@ class RequestForm extends Model
             if (($pos = strpos($this->endpoint, '?')) !== false) {
                 $this->endpoint = substr($this->endpoint, 0, $pos);
             }
-            // Parse params
-            $query = parse_url($url, PHP_URL_QUERY);
-            if (trim($query) !== '') {
-                foreach (explode('&', $query) as $couple) {
-                    list($key, $value) = explode('=', $couple, 2) + [1 => ''];
-                    $this->queryKeys[] = urldecode($key);
-                    $this->queryValues[] = urldecode($value);
-                    $this->queryActives[] = true;
-                }
-            }
+            // Convert query string into params
+            $query = trim(parse_url($url, PHP_URL_QUERY));
+            $this->parseQuery($query, $this->queryKeys, $this->queryValues, $this->queryActives);
         } else {
             $this->addError('endpoint', $error);
         }
@@ -82,7 +76,9 @@ class RequestForm extends Model
     public function beforeValidate()
     {
         if (parent::beforeValidate()) {
-            $this->beforeValidateParamRows();
+            $this->prepareRows($this->queryKeys, $this->queryValues, $this->queryActives);
+            $this->prepareRows($this->bodyKeys, $this->bodyValues, $this->bodyActives);
+            $this->prepareRows($this->headerKeys, $this->headerValues, $this->headerActives);
 
             return true;
         } else {
@@ -90,79 +86,11 @@ class RequestForm extends Model
         }
     }
 
-    protected function beforeValidateParamRows()
+    public function addEmptyRows()
     {
-        $keys = (array)$this->queryKeys;
-        $values = (array)$this->queryValues;
-        $actives = (array)$this->queryActives;
-        $this->queryKeys = [];
-        $this->queryValues = [];
-        $this->queryActives = [];
-        while (
-            ($key = each($keys)) &&
-            ($value = each($values)) &&
-            ($active = each($actives))
-        ) {
-            if ($key[1] === '' && $value[1] === '') {
-                continue;
-            }
-            $this->queryKeys[] = $key[1];
-            $this->queryValues[] = $value[1];
-            $this->queryActives[] = $active[1];
-        }
-
-        $keys = (array)$this->bodyKeys;
-        $values = (array)$this->bodyValues;
-        $actives = (array)$this->bodyActives;
-        $this->bodyKeys = [];
-        $this->bodyValues = [];
-        $this->bodyActives = [];
-        while (
-            ($key = each($keys)) &&
-            ($value = each($values)) &&
-            ($active = each($actives))
-        ) {
-            if ($key[1] === '' && $value[1] === '') {
-                continue;
-            }
-            $this->bodyKeys[] = $key[1];
-            $this->bodyValues[] = $value[1];
-            $this->bodyActives[] = $active[1];
-        }
-
-        $keys = (array)$this->headerKeys;
-        $values = (array)$this->headerValues;
-        $actives = (array)$this->headerActives;
-        $this->headerKeys = [];
-        $this->headerValues = [];
-        $this->headerActives = [];
-        while (
-            ($key = each($keys)) &&
-            ($value = each($values)) &&
-            ($active = each($actives))
-        ) {
-            if ($key[1] === '' && $value[1] === '') {
-                continue;
-            }
-            $this->headerKeys[] = $key[1];
-            $this->headerValues[] = $value[1];
-            $this->headerActives[] = $active[1];
-        }
-    }
-
-    public function addNewParamRows()
-    {
-        $this->queryKeys[] = '';
-        $this->queryValues[] = '';
-        $this->queryActives[] = true;
-
-        $this->bodyKeys[] = '';
-        $this->bodyValues[] = '';
-        $this->bodyActives[] = true;
-
-        $this->headerKeys[] = '';
-        $this->headerValues[] = '';
-        $this->headerActives[] = true;
+        $this->addEmptyRow($this->queryKeys, $this->queryValues, $this->queryActives);
+        $this->addEmptyRow($this->bodyKeys, $this->bodyValues, $this->bodyActives);
+        $this->addEmptyRow($this->headerKeys, $this->headerValues, $this->headerActives);
     }
 
     public function attributeLabels()
@@ -190,5 +118,132 @@ class RequestForm extends Model
             'head' => 'HEAD',
             'options' => 'OPTIONS',
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getUri()
+    {
+        if (($query = $this->getQueryString()) !== '') {
+            return  $this->endpoint . '?' . $query;
+        } else {
+            return  $this->endpoint;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getQueryString()
+    {
+        $this->buildQuery($this->queryKeys, $this->queryValues, $this->queryActives, $query);
+        return $query;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBodyParams()
+    {
+        $this->buildQuery($this->bodyKeys, $this->bodyValues, $this->bodyActives, $query);
+        parse_str($query, $data);
+
+        return $data;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        $headers = [];
+        foreach ($this->headerKeys as $i => $key) {
+            if ($this->headerActives[$i]) {
+                $headers[$key][] = $this->headerValues[$i];
+            }
+        }
+
+        return $headers;
+    }
+
+    /**
+     * @param string[] $keys
+     * @param string[] $values
+     * @param boolean[] $actives
+     */
+    private function prepareRows(&$keys, &$values, &$actives)
+    {
+        $k = (array)$keys;
+        $v = (array)$values;
+        $a = (array)$actives;
+        $keys = [];
+        $values = [];
+        $actives = [];
+        while(($key = each($k)) && ($value = each($v)) && ($active = each($a))) {
+            if ($key[1] !== '' || $value[1] !== '') {
+                $keys[] = $key[1];
+                $values[] = $value[1];
+                $actives[] = $active[1];
+            }
+        }
+    }
+
+    /**
+     * @param string[] $keys
+     * @param string[] $values
+     * @param boolean[] $actives
+     */
+    private function addEmptyRow(&$keys, &$values, &$actives)
+    {
+        $keys[] = '';
+        $values[] = '';
+        $actives[] = true;
+    }
+
+    /**
+     * @param string $query
+     * @param string[] $keys
+     * @param string[] $values
+     * @param boolean[] $actives
+     * @return bool
+     */
+    private function parseQuery($query, &$keys, &$values, &$actives)
+    {
+        if ($query !== '') {
+            foreach (explode('&', $query) as $couple) {
+                list($key, $value) = explode('=', $couple, 2) + [1 => ''];
+                $keys[] = urldecode($key);
+                $values[] = urldecode($value);
+                $actives[] = true;
+            }
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param string[] $keys
+     * @param string[] $values
+     * @param boolean[] $actives
+     * @param string $query
+     * @return bool
+     */
+    private function buildQuery($keys, $values, $actives, &$query)
+    {
+        $couples = [];
+        foreach ($keys as $i => $key) {
+            if ($actives[$i]) {
+                $couples[] =
+                    str_replace(['%5B', '%5D'], ['[', ']'], urlencode($key)) .
+                    '=' .
+                    urlencode($values[$i]);
+            }
+        }
+        $query = join('&', $couples);
+
+        return $query !== '';
     }
 }
