@@ -14,14 +14,14 @@ class RawFormatter extends Object
 {
     /**
      * @param \zhuravljov\yii\rest\models\ResponseRecord $record
-     * @param \yii\web\View $view
      * @return string
      */
-    public function format($record, $view)
+    public function format($record)
     {
         return Html::tag('pre',
             Html::tag('code',
-                Html::encode($record->content)
+                Html::encode($record->content),
+                ['id' => 'response-content']
             )
         );
     }

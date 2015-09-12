@@ -71,6 +71,9 @@ use yii\web\Response;
                 /** @var \zhuravljov\yii\rest\formatters\RawFormatter $formatter */
                 $formatter = \Yii::createObject($formatterConfig);
                 echo $formatter->format($record, $this);
+                \zhuravljov\yii\rest\HighlightAsset::register($this);
+                $this->registerJs('hljs.highlightBlock(document.getElementById("response-content"));');
+                $this->registerCss('pre code.hljs {background: transparent}');
                 ?>
             </div><!-- #response-body -->
 

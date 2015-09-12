@@ -3,7 +3,6 @@
 namespace zhuravljov\yii\rest\formatters;
 
 use yii\helpers\Html;
-use zhuravljov\yii\rest\HighlightAsset;
 
 /**
  * Class HtmlFormatter
@@ -15,12 +14,8 @@ class HtmlFormatter extends RawFormatter
     /**
      * @inheritdoc
      */
-    public function format($record, $view)
+    public function format($record)
     {
-        HighlightAsset::register($view);
-        $view->registerJs('hljs.highlightBlock(document.getElementById("response-content"));');
-        $view->registerCss('pre code.hljs {background: transparent}');
-
         return Html::tag('pre',
             Html::tag('code',
                 Html::encode($record->content),
