@@ -39,7 +39,6 @@ class RequestForm extends Model
 
             ['endpoint', 'string'],
             ['endpoint', 'validateEndpoint'],
-            ['endpoint', 'required'],
 
             ['tab', 'in', 'range' => [1, 2, 3]],
 
