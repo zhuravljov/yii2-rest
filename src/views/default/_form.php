@@ -153,28 +153,8 @@ JS
 );
 $this->registerCss(<<<'CSS'
 
-.params-list {
-    margin: -8px;
-}
-.params-list .form-group {
-    margin-bottom: 0;
-}
-.params-list .form-group .help-block {
-    margin: 0;
-}
-.params-list td {
-    border-top: none !important;
-}
-.params-list td.column-check,
-.params-list td.column-actions {
-    width: 30px;
-    vertical-align: middle !important;
-}
-.params-list td.column-key {
-    width: 30%;
-}
-.params-list tr:last-child button.close {
-    display: none;
+.form-group-lg .input-group-addon {
+    font-size: 18px;
 }
 
 CSS

@@ -127,6 +127,11 @@ $this->registerCss(<<<'CSS'
     white-space: normal;
     font-size: 85%;
 }
-
+#response-headers tbody td {
+    word-break: break-all;
+}
+#response-headers tbody th {
+    width: 30%;
+}
 CSS
 );
