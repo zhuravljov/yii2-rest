@@ -29,6 +29,7 @@ class DbStorage extends Storage
      *     response LONGBLOB NOT NULL,
      *     method VARCHAR(8),
      *     endpoint VARCHAR(128),
+     *     description LONGTEXT,
      *     status VARCHAR(3),
      *     stored_at INT(11) DEFAULT NULL,
      *     favorited_at INT(11) DEFAULT NULL,
@@ -99,7 +100,7 @@ class DbStorage extends Storage
     protected function readHistory()
     {
         $query = (new Query())
-            ->select(['tag', 'method', 'endpoint', 'status', 'time' => 'stored_at'])
+            ->select(['tag', 'method', 'endpoint', 'description', 'status', 'time' => 'stored_at'])
             ->from($this->tableName)
             ->andWhere(['module_id' => $this->module->id])
             ->andWhere('stored_at IS NOT NULL')
@@ -149,7 +150,7 @@ class DbStorage extends Storage
     protected function readCollection()
     {
         $query = (new Query())
-            ->select(['tag', 'method', 'endpoint', 'status', 'time' => 'favorited_at'])
+            ->select(['tag', 'method', 'endpoint', 'description', 'status', 'time' => 'favorited_at'])
             ->from($this->tableName)
             ->andWhere(['module_id' => $this->module->id])
             ->andWhere('favorited_at IS NOT NULL')
