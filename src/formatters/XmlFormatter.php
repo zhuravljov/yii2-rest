@@ -23,7 +23,7 @@ class XmlFormatter extends RawFormatter
         try {
             $dom->loadXML($record->content);
         } catch (ErrorException $e) {
-            return parent::format($record, $view);
+            return $this->warn($e) . parent::format($record, $view);
         }
         $content = $dom->saveXML();
 

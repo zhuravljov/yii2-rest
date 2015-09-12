@@ -21,8 +21,19 @@ class RawFormatter extends Object
     {
         return Html::tag('pre',
             Html::tag('code',
-                HTml::encode($record->content)
+                Html::encode($record->content)
             )
         );
+    }
+
+    /**
+     * @param \Exception $exception
+     * @return string
+     */
+    protected function warn($exception)
+    {
+        return Html::tag('div', '<strong>Warning!</strong> ' . $exception->getMessage(), [
+            'class' => 'alert alert-warning',
+        ]);
     }
 }

@@ -22,7 +22,7 @@ class JsonFormatter extends RawFormatter
         try {
             $data = Json::decode($record->content);
         } catch (InvalidParamException $e) {
-            return parent::format($record, $view);
+            return $this->warn($e) . parent::format($record, $view);
         }
         $content = Json::encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
