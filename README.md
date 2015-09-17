@@ -1,6 +1,13 @@
 Yii2 REST Client
 ================
 
+[![Latest Stable Version](https://poser.pugx.org/zhuravljov/yii2-rest/v/stable.png)](https://packagist.org/packages/zhuravljov/yii2-rest)
+[![Build Status](https://travis-ci.org/zhuravljov/yii2-rest.svg)](https://travis-ci.org/zhuravljov/yii2-rest)
+
+
+What is this?
+-------------
+
 ![Screen](/docs/images/screen1.png)
 
 
