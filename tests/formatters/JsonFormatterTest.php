@@ -1,6 +1,6 @@
 <?php
 
-namespace tests;
+namespace tests\formatters;
 
 use zhuravljov\yii\rest\formatters\JsonFormatter;
 use zhuravljov\yii\rest\models\ResponseRecord;
@@ -10,12 +10,20 @@ use zhuravljov\yii\rest\models\ResponseRecord;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class JsonFormatterTest extends TestCase
+class JsonFormatterTest extends FormatterTestCase
 {
+    /**
+     * @inheritdoc
+     */
+    protected function getFormatterInstance()
+    {
+        return new JsonFormatter();
+    }
+
     public function testFormat()
     {
-        $formatter = new JsonFormatter();
-        $record = new ResponseRecord();
+        $formatter = $this->getFormatterInstance();
+        $record = $this->getResponseRecordInstance();
         $record->content = '{"id":"1"}';
 
         $this->assertEquals(<<<HTML

@@ -1,21 +1,28 @@
 <?php
 
-namespace tests;
+namespace tests\formatters;
 
 use zhuravljov\yii\rest\formatters\RawFormatter;
-use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class RawFormatterTest
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class RawFormatterTest extends TestCase
+class RawFormatterTest extends FormatterTestCase
 {
+    /**
+     * @inheritdoc
+     */
+    protected function getFormatterInstance()
+    {
+        return new RawFormatter();
+    }
+
     public function testFormat()
     {
-        $formatter = new RawFormatter();
-        $record = new ResponseRecord();
+        $formatter = $this->getFormatterInstance();
+        $record = $this->getResponseRecordInstance();
         $record->content = '12345';
 
         $this->assertEquals(

@@ -1,7 +1,8 @@
 <?php
 
-namespace tests;
+namespace tests\models;
 
+use tests\TestCase;
 use zhuravljov\yii\rest\models\RequestForm;
 
 /**

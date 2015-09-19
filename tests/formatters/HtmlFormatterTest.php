@@ -1,21 +1,28 @@
 <?php
 
-namespace tests;
+namespace tests\formatters;
 
 use zhuravljov\yii\rest\formatters\HtmlFormatter;
-use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class HtmlFormatterTest
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class HtmlFormatterTest extends TestCase
+class HtmlFormatterTest extends FormatterTestCase
 {
+    /**
+     * @inheritdoc
+     */
+    protected function getFormatterInstance()
+    {
+        return new HtmlFormatter();
+    }
+
     public function testFormat()
     {
-        $formatter = new HtmlFormatter();
-        $record = new ResponseRecord();
+        $formatter = $this->getFormatterInstance();
+        $record = $this->getResponseRecordInstance();
         $record->content = '<div>12345</div>';
 
         $this->assertEquals(

@@ -1,21 +1,28 @@
 <?php
 
-namespace tests;
+namespace tests\formatters;
 
 use zhuravljov\yii\rest\formatters\XmlFormatter;
-use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class XmlFormatterTest
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class XmlFormatterTest extends TestCase
+class XmlFormatterTest extends FormatterTestCase
 {
+    /**
+     * @inheritdoc
+     */
+    protected function getFormatterInstance()
+    {
+        return new XmlFormatter();
+    }
+
     public function testFormat()
     {
-        $formatter = new XmlFormatter();
-        $record = new ResponseRecord();
+        $formatter = $this->getFormatterInstance();
+        $record = $this->getResponseRecordInstance();
         $record->content = '<?xml version="1.0" encoding="UTF-8"?><response><id>12345</id></response>';
 
         $this->assertEquals(<<<XML
