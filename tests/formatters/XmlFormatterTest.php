@@ -2,7 +2,9 @@
 
 namespace tests\formatters;
 
+use yii\helpers\Html;
 use zhuravljov\yii\rest\formatters\XmlFormatter;
+use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class XmlFormatterTest
@@ -11,28 +13,24 @@ use zhuravljov\yii\rest\formatters\XmlFormatter;
  */
 class XmlFormatterTest extends FormatterTestCase
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getFormatterInstance()
-    {
-        return new XmlFormatter();
-    }
-
     public function testFormat()
     {
-        $formatter = $this->getFormatterInstance();
-        $record = $this->getResponseRecordInstance();
-        $record->content = '<?xml version="1.0" encoding="UTF-8"?><response><id>12345</id></response>';
+        $formatter = new XmlFormatter();
 
-        $this->assertEquals(<<<XML
-<pre><code id="response-content" class="xml">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
-&lt;response&gt;
-  &lt;id&gt;12345&lt;/id&gt;
-&lt;/response&gt;
-</code></pre>
-XML
-            , $formatter->format($record)
+        $expectedRecord = new ResponseRecord();
+        $expectedRecord->content = '<?xml version="1.0" encoding="UTF-8"?><response><id>12345</id></response>';
+        $expectedDom = new \DOMDocument();
+        $expectedDom->formatOutput = true;
+        $expectedDom->loadXML($expectedRecord->content);
+        $expectedContent = $expectedDom->saveXML();
+        $expectedHtml = Html::tag('pre',
+            Html::tag('code',
+                Html::encode($expectedContent),
+                ['id' => 'response-content', 'class' => 'xml']
+            )
         );
+        $actualHtml = $formatter->format($expectedRecord);
+
+        $this->assertEquals($expectedHtml, $actualHtml);
     }
 }

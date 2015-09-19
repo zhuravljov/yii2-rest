@@ -2,6 +2,8 @@
 
 namespace tests\formatters;
 
+use yii\helpers\Html;
+use yii\helpers\Json;
 use zhuravljov\yii\rest\formatters\JsonFormatter;
 use zhuravljov\yii\rest\models\ResponseRecord;
 
@@ -12,39 +14,44 @@ use zhuravljov\yii\rest\models\ResponseRecord;
  */
 class JsonFormatterTest extends FormatterTestCase
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getFormatterInstance()
-    {
-        return new JsonFormatter();
-    }
-
     public function testFormat()
     {
-        $formatter = $this->getFormatterInstance();
-        $record = $this->getResponseRecordInstance();
-        $record->content = '{"id":"1"}';
+        $formatter = new JsonFormatter();
 
-        $this->assertEquals(<<<HTML
-<pre><code id="response-content" class="json">{
-    &quot;id&quot;: &quot;1&quot;
-}</code></pre>
-HTML
-            , $formatter->format($record)
+        $expectedRecord = new ResponseRecord();
+        $expectedRecord->content = '{"id":"1"}';
+        $expectedData = Json::decode($expectedRecord->content);
+        $expectedContent = Json::encode($expectedData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+        $expectedHtml = Html::tag('pre',
+            Html::tag('code',
+                Html::encode($expectedContent),
+                ['id' => 'response-content', 'class' => 'json']
+            )
         );
+        $actualHtml = $formatter->format($expectedRecord);
+
+        $this->assertEquals($expectedHtml, $actualHtml);
     }
 
     public function testError()
     {
         $formatter = new JsonFormatter();
-        $record = new ResponseRecord();
-        $record->content = '{"id":"1"';
 
-        $this->assertEquals(
-            '<div class="alert alert-warning"><strong>Warning!</strong> Syntax error.</div>' .
-            '<pre><code id="response-content">{&quot;id&quot;:&quot;1&quot;</code></pre>',
-            $formatter->format($record)
-        );
+        $expectedRecord = new ResponseRecord();
+        $expectedRecord->content = '{"id":"1"';
+        $expectedHtml =
+            Html::tag('div',
+                '<strong>Warning!</strong> Syntax error.',
+                ['class' => 'alert alert-warning']
+            ) .
+            Html::tag('pre',
+                Html::tag('code',
+                    Html::encode($expectedRecord->content),
+                    ['id' => 'response-content']
+                )
+            );
+        $actualHtml = $formatter->format($expectedRecord);
+
+        $this->assertEquals($expectedHtml, $actualHtml);
     }
 }

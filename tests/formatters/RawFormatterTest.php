@@ -3,6 +3,7 @@
 namespace tests\formatters;
 
 use zhuravljov\yii\rest\formatters\RawFormatter;
+use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class RawFormatterTest
@@ -11,23 +12,16 @@ use zhuravljov\yii\rest\formatters\RawFormatter;
  */
 class RawFormatterTest extends FormatterTestCase
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getFormatterInstance()
-    {
-        return new RawFormatter();
-    }
-
     public function testFormat()
     {
-        $formatter = $this->getFormatterInstance();
-        $record = $this->getResponseRecordInstance();
-        $record->content = '12345';
+        $formatter = new RawFormatter();
+
+        $expectedRecord = new ResponseRecord();
+        $expectedRecord->content = '12345';
 
         $this->assertEquals(
             '<pre><code id="response-content">12345</code></pre>',
-            $formatter->format($record)
+            $formatter->format($expectedRecord)
         );
     }
 }

@@ -2,7 +2,9 @@
 
 namespace tests\formatters;
 
+use yii\helpers\Html;
 use zhuravljov\yii\rest\formatters\HtmlFormatter;
+use zhuravljov\yii\rest\models\ResponseRecord;
 
 /**
  * Class HtmlFormatterTest
@@ -11,23 +13,20 @@ use zhuravljov\yii\rest\formatters\HtmlFormatter;
  */
 class HtmlFormatterTest extends FormatterTestCase
 {
-    /**
-     * @inheritdoc
-     */
-    protected function getFormatterInstance()
-    {
-        return new HtmlFormatter();
-    }
-
     public function testFormat()
     {
-        $formatter = $this->getFormatterInstance();
-        $record = $this->getResponseRecordInstance();
-        $record->content = '<div>12345</div>';
+        $formatter = new HtmlFormatter();
 
-        $this->assertEquals(
-            '<pre><code id="response-content" class="html">&lt;div&gt;12345&lt;/div&gt;</code></pre>',
-            $formatter->format($record)
+        $expectedRecord = new ResponseRecord();
+        $expectedRecord->content = '<div>12345</div>';
+        $expectedHtml = Html::tag('pre',
+            Html::tag('code',
+                Html::encode($expectedRecord->content),
+                ['id' => 'response-content', 'class' => 'html']
+            )
         );
+        $actualHtml = $formatter->format($expectedRecord);
+
+        $this->assertEquals($expectedHtml, $actualHtml);
     }
 }
