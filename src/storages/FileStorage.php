@@ -28,7 +28,7 @@ class FileStorage extends Storage
      */
     protected function readData($tag, &$request, &$response)
     {
-        $fileName = "/{$this->path}/{$tag}.data";
+        $fileName = "{$this->path}/{$tag}.data";
         if (file_exists($fileName)) {
             $data = unserialize(file_get_contents($fileName));
             $request = $data['request'];
@@ -45,7 +45,7 @@ class FileStorage extends Storage
     protected function writeData($tag, $request, $response)
     {
         FileHelper::createDirectory($this->path);
-        file_put_contents("/{$this->path}/{$tag}.data", serialize([
+        file_put_contents("{$this->path}/{$tag}.data", serialize([
             'request' => $request,
             'response' => $response,
         ]));
@@ -56,7 +56,7 @@ class FileStorage extends Storage
      */
     protected function removeData($tag)
     {
-        $fileName = "/{$this->path}/{$tag}.data";
+        $fileName = "{$this->path}/{$tag}.data";
         if (file_exists($fileName)) {
             unlink($fileName);
         }
@@ -67,7 +67,7 @@ class FileStorage extends Storage
      */
     protected function readHistory()
     {
-        $fileName = "/{$this->path}/history.data";
+        $fileName = "{$this->path}/history.data";
         if (file_exists($fileName)) {
             return unserialize(file_get_contents($fileName));
         } else {
@@ -81,7 +81,7 @@ class FileStorage extends Storage
     protected function writeHistory($rows)
     {
         FileHelper::createDirectory($this->path);
-        file_put_contents("/{$this->path}/history.data", serialize($rows));
+        file_put_contents("{$this->path}/history.data", serialize($rows));
     }
 
     /**
@@ -89,7 +89,7 @@ class FileStorage extends Storage
      */
     protected function readCollection()
     {
-        $fileName = "/{$this->path}/collection.data";
+        $fileName = "{$this->path}/collection.data";
         if (file_exists($fileName)) {
             return unserialize(file_get_contents($fileName));
         } else {
@@ -103,6 +103,6 @@ class FileStorage extends Storage
     protected function writeCollection($rows)
     {
         FileHelper::createDirectory($this->path);
-        file_put_contents("/{$this->path}/collection.data", serialize($rows));
+        file_put_contents("{$this->path}/collection.data", serialize($rows));
     }
 }

@@ -12,6 +12,21 @@ use Yii;
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Returns a test configuration param from /data/config.php
+     * @param  string $name params name
+     * @param  mixed $default default value to use when param is not set.
+     * @return mixed  the value of the configuration param
+     */
+    public static function getParam($name, $default = null)
+    {
+        static $params;
+        if ($params === null) {
+            $params = require(__DIR__ . '/data/config.php');
+        }
+        return isset($params[$name]) ? $params[$name] : $default;
+    }
+
+    /**
      * Clean up after test.
      * By default the application created with [[mockApplication]] will be destroyed.
      */

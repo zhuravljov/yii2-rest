@@ -156,7 +156,7 @@ abstract class Storage extends Object
      * @param array $data
      * @return boolean
      */
-    public function addToHistory($tag, array $data)
+    protected function addToHistory($tag, array $data)
     {
         $this->getHistory();
         $this->_history[$tag] = $data;
