@@ -236,6 +236,19 @@ abstract class Storage extends Object
     }
 
     /**
+     * @return array
+     */
+    public function exportCollection()
+    {
+        $collection  = $this->getCollection();
+        foreach (array_keys($collection) as $tag) {
+            $this->readData($tag, $collection[$tag]['request'], $collection[$tag]['response']);
+        }
+
+        return $collection;
+    }
+
+    /**
      * @param string $tag
      * @param array $request
      * @param array $response

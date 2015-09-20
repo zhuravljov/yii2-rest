@@ -165,4 +165,12 @@ abstract class StorageTestCase extends TestCase
 
         $this->assertEquals(0, count($storage->getHistory()));
     }
+
+    public function testExportCollection()
+    {
+        $storage = $this->getStorageInstance();
+        $rows = $storage->exportCollection();
+
+        $this->assertEquals(count($storage->getCollection()), count($rows));
+    }
 }

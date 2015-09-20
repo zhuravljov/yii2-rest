@@ -4,6 +4,7 @@ namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -53,5 +54,13 @@ class CollectionController extends Controller
         } else {
             throw new NotFoundHttpException('Request not found.');
         }
+    }
+
+    public function actionExport()
+    {
+        return Yii::$app->response->sendContentAsFile(
+            Json::encode($this->module->storage->exportCollection()),
+            $this->module->id .'-' . date('Ymd-His') . '.json'
+        );
     }
 }
