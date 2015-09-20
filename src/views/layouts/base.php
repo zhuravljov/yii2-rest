@@ -23,55 +23,57 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
 </head>
 <body>
     <?php $this->beginBody() ?>
-    <?php
-    NavBar::begin([
-        'brandLabel' => 'REST Client',
-        'brandUrl' => ['request/create'],
-        'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
-    ]);
+    <div class="wrap">
+        <?php
+        NavBar::begin([
+            'brandLabel' => 'REST Client',
+            'brandUrl' => ['request/create'],
+            'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
+        ]);
 
-    echo $menu;
+        echo $menu;
 
-    echo Nav::widget([
-        'options' => ['class' => 'nav navbar-nav'],
-        'items' => [
-            [
-                'label' => 'Actions',
-                'items' => [
-                    [
-                        'label' => 'Export Collection',
-                        'url' => ['collection/export'],
-                    ],
-                    '<li class="divider"></li>',
-                    [
-                        'label' => 'Clear History',
-                        'url' => ['history/clear'],
-                        'linkOptions' => [
-                            'data-method' => 'post',
-                            'data-confirm' => 'Are you sure?',
+        echo Nav::widget([
+            'options' => ['class' => 'nav navbar-nav'],
+            'items' => [
+                [
+                    'label' => 'Actions',
+                    'items' => [
+                        [
+                            'label' => 'Export Collection',
+                            'url' => ['collection/export'],
+                        ],
+                        '<li class="divider"></li>',
+                        [
+                            'label' => 'Clear History',
+                            'url' => ['history/clear'],
+                            'linkOptions' => [
+                                'data-method' => 'post',
+                                'data-confirm' => 'Are you sure?',
+                            ],
                         ],
                     ],
                 ],
             ],
-        ],
-    ]);
+        ]);
 
-    echo Nav::widget([
-        'options' => ['class' => 'nav navbar-nav navbar-right'],
-        'items' => [
-            [
-                'label' => 'Application',
-                'url' => Yii::$app->homeUrl,
+        echo Nav::widget([
+            'options' => ['class' => 'nav navbar-nav navbar-right'],
+            'items' => [
+                [
+                    'label' => 'Application',
+                    'url' => Yii::$app->homeUrl,
+                ],
             ],
-        ],
-    ]);
+        ]);
 
-    NavBar::end();
-    ?>
+        NavBar::end();
+        ?>
 
-    <div class="container">
-        <?= $content ?>
-    </div>
+        <div class="container">
+            <?= $content ?>
+        </div><!-- .container -->
+    </div><!-- .wrap -->
 
     <footer class="footer">
         <div class="container">
