@@ -13,11 +13,11 @@ use zhuravljov\yii\rest\models\ResponseRecord;
 use zhuravljov\yii\rest\Module;
 
 /**
- * Class DefaultController
+ * Class RequestController
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-class DefaultController extends Controller
+class RequestController extends Controller
 {
     /**
      * @var \zhuravljov\yii\rest\Module
@@ -26,9 +26,9 @@ class DefaultController extends Controller
     /**
      * @inheritdoc
      */
-    public $defaultAction = 'request';
+    public $defaultAction = 'create';
 
-    public function actionRequest($tag = null)
+    public function actionCreate($tag = null)
     {
         /** @var RequestForm $model */
         $model = Yii::createObject(RequestForm::className());
@@ -48,12 +48,10 @@ class DefaultController extends Controller
             $record = $this->send($model);
             $tag = $this->module->storage->save($model, $record);
 
-            return $this->redirect(['request', 'tag' => $tag, '#' => 'response']);
+            return $this->redirect(['create', 'tag' => $tag, '#' => 'response']);
         }
 
         $model->addEmptyRows();
-
-
         $history = $this->module->storage->getHistory();
         $collection = $this->module->storage->getCollection();
 
@@ -70,7 +68,7 @@ class DefaultController extends Controller
             }
         });
 
-        return $this->render('request', [
+        return $this->render('create', [
             'tag' => $tag,
             'baseUrl' => rtrim($this->module->baseUrl, '/') . '/',
             'model' => $model,
@@ -78,39 +76,6 @@ class DefaultController extends Controller
             'history' => $history,
             'collection' => $collection,
         ]);
-    }
-
-    public function actionRemoveFromHistory($tag)
-    {
-        if ($this->module->storage->exists($tag)) {
-            $this->module->storage->removeFromHistory($tag);
-
-            return $this->redirect(['request']);
-        } else {
-            throw new NotFoundHttpException('Request not found.');
-        }
-    }
-
-    public function actionAddToCollection($tag)
-    {
-        if ($this->module->storage->exists($tag)) {
-            $this->module->storage->addToCollection($tag);
-
-            return $this->redirect(['request', 'tag' => $tag]);
-        } else {
-            throw new NotFoundHttpException('Request not found.');
-        }
-    }
-
-    public function actionRemoveFromCollection($tag)
-    {
-        if ($this->module->storage->exists($tag)) {
-            $this->module->storage->removeFromCollection($tag);
-
-            return $this->redirect(['request']);
-        } else {
-            throw new NotFoundHttpException('Request not found.');
-        }
     }
 
     /**

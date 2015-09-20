@@ -8,7 +8,7 @@ use yii\helpers\Url;
  * @var array $items
  */
 ?>
-<div class="rest-default-history">
+<div class="rest-request-history">
 
     <ul id="history-list" class="request-list">
         <?php foreach (array_reverse($items) as $tag => $row): ?>
@@ -30,7 +30,7 @@ use yii\helpers\Url;
             }
             ?>
             <li <?= Html::renderTagAttributes($options) ?>>
-                <a href="<?= Url::to(['request', 'tag' => $tag]) ?>">
+                <a href="<?= Url::to(['request/create', 'tag' => $tag]) ?>">
                     <span class="request-name">
                         <span class="request-method">
                             <?= Html::encode($row['method']) ?>
@@ -47,9 +47,9 @@ use yii\helpers\Url;
                 </a>
                 <div class="actions">
                     <?php if (!$row['in_collection']): ?>
-                        <?= Html::a('&plus;', ['add-to-collection', 'tag' => $tag]) ?>
+                        <?= Html::a('&plus;', ['collection/link', 'tag' => $tag]) ?>
                     <?php endif; ?>
-                    <?= Html::a('&times;', ['remove-from-history', 'tag' => $tag]) ?>
+                    <?= Html::a('&times;', ['history/delete', 'tag' => $tag]) ?>
                 </div>
             </li>
         <?php endforeach; ?>

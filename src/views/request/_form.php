@@ -10,9 +10,9 @@ use zhuravljov\yii\rest\models\RequestForm;
  * @var ActiveForm $form
  */
 ?>
-<div class="rest-default-request-form">
+<div class="rest-request-form">
     <?php $form = ActiveForm::begin([
-        'action' => ['request'],
+        'action' => ['create'],
         'fieldConfig' => [
             'labelOptions' => ['class' => 'control-label sr-only'],
         ],

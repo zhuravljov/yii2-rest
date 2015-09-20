@@ -8,7 +8,7 @@ use yii\helpers\Url;
  * @var array $items
  */
 ?>
-<div class="rest-default-collection">
+<div class="rest-request-collection">
     <ul id="collection-list" class="request-list">
         <?php foreach ($items as $group => $rows): ?>
             <li>
@@ -36,7 +36,7 @@ use yii\helpers\Url;
                         }
                         ?>
                         <li <?= Html::renderTagAttributes($options) ?>>
-                            <a href="<?= Url::to(['request', 'tag' => $tag]) ?>">
+                            <a href="<?= Url::to(['request/create', 'tag' => $tag]) ?>">
                                 <span class="request-name">
                                     <span class="request-method">
                                         <?= Html::encode($row['method']) ?>
@@ -52,7 +52,7 @@ use yii\helpers\Url;
                                 <?php endif; ?>
                             </a>
                             <div class="actions">
-                                <?= Html::a('&times;', ['remove-from-collection', 'tag' => $tag]) ?>
+                                <?= Html::a('&times;', ['collection/unlink', 'tag' => $tag]) ?>
                             </div>
                         </li>
                     <?php endforeach; ?>

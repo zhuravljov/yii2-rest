@@ -35,6 +35,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $controllerNamespace = 'zhuravljov\yii\rest\controllers';
     /**
+     * @inheritdoc
+     */
+    public $defaultRoute = 'request';
+    /**
      * @var array the list of IPs that are allowed to access this module.
      * Each array element represents a single IP filter which can be either an IP address
      * or an address with wildcard (e.g. 192.168.0.*) to represent a network segment.
@@ -69,10 +73,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
     {
         if ($app instanceof Application) {
             $app->getUrlManager()->addRules([
-                $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/default/request',
-                $this->id . '/<tag:[0-9a-f]+>/<action:[\w-]+>' => $this->id . '/default/<action>',
-                $this->id => $this->id . '/default/request',
-                $this->id . '/<action:[\w-]+>' => $this->id . '/default/<action>',
+                $this->id . '/<tag:[0-9a-f]+>' => $this->id . '/request/create',
+                $this->id => $this->id . '/request/create',
+                $this->id . '/<controller:\w+>/<action:\w+>/<tag:[0-9a-f]+>' => $this->id . '/<controller>/<action>',
+                $this->id . '/<controller:\w+>/<action:\w+>' => $this->id . '/<controller>/<action>',
             ], false);
         } else {
             throw new InvalidConfigException('Can use for web application only.');

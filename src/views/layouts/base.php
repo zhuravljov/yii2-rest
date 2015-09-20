@@ -26,7 +26,7 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
     <?php
     NavBar::begin([
         'brandLabel' => 'REST Client',
-        'brandUrl' => ['default/request'],
+        'brandUrl' => ['request/create'],
         'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
     ]);
 
