@@ -184,6 +184,22 @@ abstract class Storage extends Object
     }
 
     /**
+     * @return bool
+     */
+    public function clearHistory()
+    {
+        $this->getHistory();
+        foreach (array_keys($this->_history) as $tag) {
+            if (!$this->getCollection($tag)) {
+                $this->removeData($tag);
+            }
+        }
+        $this->writeHistory($this->_history = []);
+
+        return true;
+    }
+
+    /**
      * @param string $tag
      * @return boolean
      */

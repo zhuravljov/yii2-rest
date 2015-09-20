@@ -157,4 +157,12 @@ abstract class StorageTestCase extends TestCase
 
         $this->assertEquals(false, $actualResult);
     }
+
+    public function testClearHistory()
+    {
+        $storage = $this->getStorageInstance();
+        $storage->clearHistory();
+
+        $this->assertEquals(0, count($storage->getHistory()));
+    }
 }

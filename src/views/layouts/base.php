@@ -33,11 +33,34 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
     echo $menu;
 
     echo Nav::widget([
-        'options' => ['class' => 'nav navbar-nav navbar-right'],
+        'options' => ['class' => 'nav navbar-nav'],
         'items' => [
-            ['label' => 'Application', 'url' => Yii::$app->homeUrl],
+            [
+                'label' => 'Actions',
+                'items' => [
+                    [
+                        'label' => 'Clear History',
+                        'url' => ['history/clear'],
+                        'linkOptions' => [
+                            'data-method' => 'post',
+                            'data-confirm' => 'Are you sure?',
+                        ],
+                    ],
+                ],
+            ],
         ],
     ]);
+
+    echo Nav::widget([
+        'options' => ['class' => 'nav navbar-nav navbar-right'],
+        'items' => [
+            [
+                'label' => 'Application',
+                'url' => Yii::$app->homeUrl,
+            ],
+        ],
+    ]);
+
     NavBar::end();
     ?>
 

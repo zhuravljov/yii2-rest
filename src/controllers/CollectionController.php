@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -17,6 +18,22 @@ class CollectionController extends Controller
      * @var \zhuravljov\yii\rest\Module
      */
     public $module;
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'link' => ['post'],
+                    'unlink' => ['post'],
+                ],
+            ],
+        ];
+    }
 
     public function actionLink($tag)
     {

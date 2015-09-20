@@ -52,7 +52,7 @@ use yii\helpers\Url;
                                 <?php endif; ?>
                             </a>
                             <div class="actions">
-                                <?= Html::a('&times;', ['collection/unlink', 'tag' => $tag]) ?>
+                                <?= Html::a('&times;', ['collection/unlink', 'tag' => $tag], ['data-method' => 'post']) ?>
                             </div>
                         </li>
                     <?php endforeach; ?>

@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\rest\controllers;
 
 use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -18,6 +19,21 @@ class HistoryController extends Controller
      */
     public $module;
 
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['post'],
+                    'clear' => ['post'],
+                ],
+            ],
+        ];
+    }
     public function actionDelete($tag)
     {
         if ($this->module->storage->exists($tag)) {
@@ -26,5 +42,11 @@ class HistoryController extends Controller
         } else {
             throw new NotFoundHttpException('Request not found.');
         }
+    }
+
+    public function actionClear()
+    {
+        $this->module->storage->clearHistory();
+        return $this->redirect(['request/create']);
     }
 }

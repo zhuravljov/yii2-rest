@@ -191,4 +191,14 @@ class DbStorage extends Storage
             }
         });
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function clearHistory()
+    {
+        return $this->db->transaction(function () {
+            return parent::clearHistory();
+        });
+    }
 }

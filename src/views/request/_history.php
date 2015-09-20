@@ -47,9 +47,9 @@ use yii\helpers\Url;
                 </a>
                 <div class="actions">
                     <?php if (!$row['in_collection']): ?>
-                        <?= Html::a('&plus;', ['collection/link', 'tag' => $tag]) ?>
+                        <?= Html::a('&plus;', ['collection/link', 'tag' => $tag], ['data-method' => 'post']) ?>
                     <?php endif; ?>
-                    <?= Html::a('&times;', ['history/delete', 'tag' => $tag]) ?>
+                    <?= Html::a('&times;', ['history/delete', 'tag' => $tag], ['data-method' => 'post']) ?>
                 </div>
             </li>
         <?php endforeach; ?>
