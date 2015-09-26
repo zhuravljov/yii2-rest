@@ -71,6 +71,7 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
         ?>
 
         <div class="container">
+            <?= $this->render('_alerts') ?>
             <?= $content ?>
         </div><!-- .container -->
     </div><!-- .wrap -->

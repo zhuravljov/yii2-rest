@@ -38,8 +38,8 @@ class CollectionController extends Controller
 
     public function actionLink($tag)
     {
-        if ($this->module->storage->exists($tag)) {
-            $this->module->storage->addToCollection($tag);
+        if ($this->module->storage->addToCollection($tag)) {
+            Yii::$app->session->setFlash('success', 'Request was added to collection successfully.');
             return $this->redirect(['request/create', 'tag' => $tag]);
         } else {
             throw new NotFoundHttpException('Request not found.');
@@ -48,8 +48,8 @@ class CollectionController extends Controller
 
     public function actionUnlink($tag)
     {
-        if ($this->module->storage->exists($tag)) {
-            $this->module->storage->removeFromCollection($tag);
+        if ($this->module->storage->removeFromCollection($tag)) {
+            Yii::$app->session->setFlash('success', 'Request was removed from collection successfully.');
             return $this->redirect(['request/create']);
         } else {
             throw new NotFoundHttpException('Request not found.');

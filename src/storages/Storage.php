@@ -184,7 +184,7 @@ abstract class Storage extends Object
     }
 
     /**
-     * @return bool
+     * @return integer count of removed records
      */
     public function clearHistory()
     {
@@ -194,9 +194,10 @@ abstract class Storage extends Object
                 $this->removeData($tag);
             }
         }
+        $count = count($this->_history);
         $this->writeHistory($this->_history = []);
 
-        return true;
+        return $count;
     }
 
     /**
