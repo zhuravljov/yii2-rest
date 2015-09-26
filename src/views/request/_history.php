@@ -11,7 +11,7 @@ use yii\helpers\Url;
 <div class="rest-request-history">
 
     <ul id="history-list" class="request-list">
-        <?php foreach (array_reverse($items) as $tag => $row): ?>
+        <?php foreach (array_reverse($items, true) as $tag => $row): ?>
             <?php
             $options = ['data-tag' => $tag];
 
