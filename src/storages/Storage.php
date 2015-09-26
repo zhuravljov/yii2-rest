@@ -3,6 +3,7 @@
 namespace zhuravljov\yii\rest\storages;
 
 use Yii;
+use yii\base\InvalidParamException;
 use yii\base\Object;
 use zhuravljov\yii\rest\models\RequestForm;
 use zhuravljov\yii\rest\models\ResponseRecord;
@@ -45,15 +46,6 @@ abstract class Storage extends Object
     public function getModule()
     {
         return $this->_module;
-    }
-
-    /**
-     * @param string $tag
-     * @return boolean
-     */
-    public function exists($tag)
-    {
-        return $this->readData($tag, $request, $response);
     }
 
     /**
@@ -126,7 +118,6 @@ abstract class Storage extends Object
     {
         if ($this->_collection === null) {
             $this->_collection = $this->readCollection();
-            uasort($this->_collection, [$this, 'compareCollection']);
         }
         if ($tag === null) {
             return $this->_collection;
@@ -134,20 +125,6 @@ abstract class Storage extends Object
             return $this->_collection[$tag];
         } else {
             return $default;
-        }
-    }
-
-    private function compareCollection($row1, $row2)
-    {
-        $methods = array_keys(RequestForm::methodLabels());
-        if ($result = strcmp($row1['endpoint'], $row2['endpoint'])) {
-            return $result; // 2. Order by endpoints
-        }
-        elseif ($result = array_search($row1['method'], $methods) - array_search($row2['method'], $methods)) {
-            return $result; // 2. Order by methods
-        }
-        else {
-            return $row1['time'] - $row2['time']; // 3. Order by time
         }
     }
 
@@ -241,13 +218,86 @@ abstract class Storage extends Object
      */
     public function exportCollection()
     {
-        $collection  = $this->getCollection();
-        foreach (array_keys($collection) as $tag) {
-            $this->readData($tag, $collection[$tag]['request'], $collection[$tag]['response']);
+        $items = [];
+        foreach (array_keys($this->getCollection()) as $tag) {
+            $this->readData($tag, $items[$tag]['request'], $items[$tag]['response']);
         }
 
-        return $collection;
+        return $items;
     }
+
+    /**
+     * @param array $data
+     * @return integer number of records that were imported
+     */
+    public function importCollection($data)
+    {
+        if (!is_array($data)) {
+            throw new InvalidParamException('Data must be an array.');
+        }
+
+        // Validate
+
+        /** @var RequestForm[] $requests */
+        $requests = [];
+        /** @var ResponseRecord[] $responses */
+        $responses = [];
+        foreach ($data as $tag => $row) {
+            if (!preg_match('/^[a-f0-9]+$/', $tag)) {
+                throw new InvalidParamException("Tag {$tag} must be a string and contains a-f0-9 symbols only.");
+            }
+
+            if (!isset($row['request'], $row['response'])) {
+                throw new InvalidParamException("Row {$tag} must contains request and response.");
+            }
+
+            $request = new RequestForm();
+            $request->setAttributes($row['request']);
+            if (!$request->validate()) {
+                $errors = $request->getFirstErrors();
+                throw new InvalidParamException(reset($errors));
+            }
+            $requests[$tag] = $request;
+
+            $response = new ResponseRecord();
+            try {
+                $response->status = $row['response']['status'];
+                $response->duration = $row['response']['duration'];
+                $response->headers = $row['response']['headers'];
+                $response->content = $row['response']['content'];
+            } catch (\Exception $e) {
+                throw new InvalidParamException($e->getMessage(), $e->getCode(), $e);
+            }
+            $responses[$tag] = $response;
+        }
+
+        // Save
+
+        $count = 0;
+        $this->_collection = $this->readCollection();
+        foreach ($requests as $tag => $request) {
+            if (!$this->exists($tag)) {
+                $this->writeData($tag, $request->getAttributes(), get_object_vars($responses[$tag]));
+                $this->_collection[$tag] = [
+                    'method' => $request->method,
+                    'endpoint' => $request->endpoint,
+                    'description' => $request->description,
+                    'status' => $responses[$tag]->status,
+                    'time' => time(),
+                ];
+                $count++;
+            }
+        }
+        $this->writeCollection($this->_collection);
+
+        return $count;
+    }
+
+    /**
+     * @param string $tag
+     * @return boolean
+     */
+    abstract public function exists($tag);
 
     /**
      * @param string $tag

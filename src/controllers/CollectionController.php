@@ -7,6 +7,7 @@ use yii\filters\VerbFilter;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use zhuravljov\yii\rest\models\ImportForm;
 
 /**
  * Class CollectionController
@@ -62,5 +63,24 @@ class CollectionController extends Controller
             Json::encode($this->module->storage->exportCollection()),
             $this->module->id .'-' . date('Ymd-His') . '.json'
         );
+    }
+
+    public function actionImport()
+    {
+        $model = new ImportForm();
+        if (
+            $model->load(Yii::$app->request->post()) &&
+            ($count = $model->save($this->module->storage)) !== false
+        ) {
+            if ($count) {
+                Yii::$app->session->setFlash('success', "{$count} requests was imported to collection successfully.");
+            } else {
+                Yii::$app->session->setFlash('warning', "New requests not found.");
+            }
+            return $this->redirect(['request/create']);
+        }
+        return $this->render('import', [
+            'model' => $model,
+        ]);
     }
 }

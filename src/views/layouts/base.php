@@ -43,6 +43,10 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
                             'label' => 'Export Collection',
                             'url' => ['collection/export'],
                         ],
+                        [
+                            'label' => 'Import Collection',
+                            'url' => ['collection/import'],
+                        ],
                         '<li class="divider"></li>',
                         [
                             'label' => 'Clear History',

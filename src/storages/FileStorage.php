@@ -26,6 +26,14 @@ class FileStorage extends Storage
     /**
      * @inheritdoc
      */
+    public function exists($tag)
+    {
+        return file_exists("{$this->path}/{$tag}.data");
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected function readData($tag, &$request, &$response)
     {
         $fileName = "{$this->path}/{$tag}.data";

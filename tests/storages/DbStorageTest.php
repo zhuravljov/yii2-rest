@@ -55,24 +55,28 @@ class DbStorageTest extends StorageTestCase
 
         $db->pdo->exec('
             CREATE TABLE IF NOT EXISTS rest (
-                tag          VARCHAR(24) NOT NULL,
-                module_id    VARCHAR(64) NOT NULL,
-                request      LONGBLOB    NOT NULL,
-                response     LONGBLOB    NOT NULL,
-                method       VARCHAR(8),
-                endpoint     VARCHAR(128),
-                description  LONGTEXT,
-                status       VARCHAR(3),
-                stored_at    INT(11) DEFAULT NULL,
+                id INT(11) NOT NULL AUTO_INCREMENT,
+                tag VARCHAR(24) NOT NULL,
+                module_id VARCHAR(64) NOT NULL,
+                request LONGBLOB NOT NULL,
+                response LONGBLOB NOT NULL,
+                method VARCHAR(8),
+                endpoint VARCHAR(128),
+                description LONGTEXT,
+                status VARCHAR(3),
+                stored_at INT(11) DEFAULT NULL,
                 favorited_at INT(11) DEFAULT NULL,
-                PRIMARY KEY (tag),
+                PRIMARY KEY (id),
+                UNIQUE KEY tag (tag, module_id),
                 KEY module_id (module_id)
             );
         ');
 
         // Data
 
-        $db->createCommand()->delete('rest', ['module_id' => 'test-module']);
+        $db->createCommand()->delete('rest', [
+            'module_id' => 'test-module',
+        ])->execute();
 
         $fixtures = static::getParam('fixtures');
         foreach ($fixtures['records'] as $tag => $row) {

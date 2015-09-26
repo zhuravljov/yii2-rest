@@ -174,4 +174,17 @@ abstract class StorageTestCase extends TestCase
 
         $this->assertEquals(count($storage->getCollection()), count($rows));
     }
+
+    public function testImportCollection()
+    {
+        $storage = $this->getStorageInstance();
+        $row = static::getParam('fixtures')['records']['1111111111111'];
+        $actualCount = $storage->importCollection([
+            '1111111111111' => $row,
+            '2222222222222' => $row,
+            '3333333333333' => $row,
+        ]);
+
+        $this->assertEquals(2, $actualCount);
+    }
 }

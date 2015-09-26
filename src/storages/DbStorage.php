@@ -22,7 +22,8 @@ class DbStorage extends Storage
      * The table should be pre-created as follows:
      *
      * ~~~
-     * CREATE TABLE rest (
+     * CREATE TABLE IF NOT EXISTS rest (
+     *     id INT(11) NOT NULL AUTO_INCREMENT,
      *     tag VARCHAR(24) NOT NULL,
      *     module_id VARCHAR(64) NOT NULL,
      *     request LONGBLOB NOT NULL,
@@ -33,7 +34,8 @@ class DbStorage extends Storage
      *     status VARCHAR(3),
      *     stored_at INT(11) DEFAULT NULL,
      *     favorited_at INT(11) DEFAULT NULL,
-     *     PRIMARY KEY (tag),
+     *     PRIMARY KEY (id),
+     *     UNIQUE KEY tag (tag, module_id),
      *     KEY module_id (module_id)
      * );
      * ~~~
@@ -44,6 +46,18 @@ class DbStorage extends Storage
     {
         parent::init();
         $this->db = Instance::ensure($this->db, Connection::className());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function exists($tag)
+    {
+        return (new Query())
+            ->from($this->tableName)
+            ->andWhere(['tag' => $tag])
+            ->andWhere(['module_id' => $this->module->id])
+            ->exists($this->db);
     }
 
     /**
@@ -182,8 +196,10 @@ class DbStorage extends Storage
                     ->execute();
             }
             foreach (array_diff_key($rows, $old) as $tag => $row) {
+                $row['favorited_at'] = $row['time'];
+                unset($row['time']);
                 $this->db->createCommand()
-                    ->update($this->tableName, ['favorited_at' => $row['time']], [
+                    ->update($this->tableName, $row, [
                         'tag' => $tag,
                         'module_id' => $this->module->id,
                     ])
@@ -199,6 +215,16 @@ class DbStorage extends Storage
     {
         return $this->db->transaction(function () {
             return parent::clearHistory();
+        });
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function importCollection($data)
+    {
+        return $this->db->transaction(function () use ($data) {
+            return parent::importCollection($data);
         });
     }
 }
