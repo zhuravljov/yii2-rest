@@ -75,7 +75,7 @@ HTML
                 <a href="#request-query" data-toggle="tab" tabindex="-1">
                     Query
                     <?= Html::tag('span', $queryCount, [
-                        'class' => 'badge' . (!$queryCount ? ' hidden' : '')
+                        'class' => 'counter' . (!$queryCount ? ' hidden' : '')
                     ]) ?>
                 </a>
             </li>
@@ -83,7 +83,7 @@ HTML
                 <a href="#request-body" data-toggle="tab" tabindex="-1">
                     Body
                     <?= Html::tag('span', $bodyCount, [
-                        'class' => 'badge' . (!$bodyCount ? ' hidden' : '')
+                        'class' => 'counter' . (!$bodyCount ? ' hidden' : '')
                     ]) ?>
                 </a>
             </li>
@@ -91,7 +91,7 @@ HTML
                 <a href="#request-headers" data-toggle="tab" tabindex="-1">
                     Headers
                     <?= Html::tag('span', $headersCount, [
-                        'class' => 'badge' . (!$headersCount ? ' hidden' : '')
+                        'class' => 'counter' . (!$headersCount ? ' hidden' : '')
                     ]) ?>
                 </a>
             </li>

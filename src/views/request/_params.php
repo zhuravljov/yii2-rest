@@ -58,10 +58,25 @@ $('.params-list')
             ));
         });
         newRow.insertAfter(curRow);
+        updateCounter($(this).parents('.tab-pane').first());
     })
     .on('click', 'button.close', function() {
+        var tab = $(this).parents('.tab-pane').first();
         $(this).parents('tr').remove();
+        updateCounter(tab);
     });
+
+function updateCounter(tab) {
+    var paramsCount = tab.find('tr').length - 1;
+    var tabId = tab.attr('id');
+    var counter = $('a[href=#' + tabId + '] > .counter');
+    counter.text(paramsCount);
+    if (paramsCount) {
+        counter.removeClass('hidden');
+    } else {
+        counter.addClass('hidden');
+    }
+}
 
 JS
 );
