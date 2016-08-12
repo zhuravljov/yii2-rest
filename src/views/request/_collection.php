@@ -52,7 +52,10 @@ use yii\helpers\Url;
                                 <?php endif; ?>
                             </a>
                             <div class="actions">
-                                <?= Html::a('&times;', ['collection/unlink', 'tag' => $tag], ['data-method' => 'post']) ?>
+                                <?= Html::a('&times;', ['collection/unlink', 'tag' => $tag], [
+                                    'data-method' => 'post',
+                                    'title' => 'Unlink from collection.',
+                                ]) ?>
                             </div>
                         </li>
                     <?php endforeach; ?>
@@ -65,10 +68,12 @@ use yii\helpers\Url;
         <?php if ($items): ?>
             <?= Html::a('Export Collection', ['collection/export'], [
                 'class' => 'btn btn-block btn-default',
+                'title' => 'Export collection to file.'
             ]) ?>
         <?php endif; ?>
         <?= Html::a('Import Collection', ['collection/import'], [
             'class' => 'btn btn-block btn-default',
+            'title' => 'Import collection from file.'
         ]) ?>
     </div>
 </div>
