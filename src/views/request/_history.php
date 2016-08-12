@@ -54,4 +54,13 @@ use yii\helpers\Url;
             </li>
         <?php endforeach; ?>
     </ul>
+
+    <?php if ($items): ?>
+        <div class="well">
+            <?= Html::a('Clear History', ['history/clear'], [
+                'class' => 'btn btn-block btn-danger',
+                'data' => ['method' => 'post', 'confirm' => 'Are you sure?'],
+            ]) ?>
+        </div>
+    <?php endif; ?>
 </div>

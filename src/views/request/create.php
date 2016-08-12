@@ -130,13 +130,16 @@ CSS
 );
 $this->registerCss(<<<'CSS'
 
-.request-list,
-.request-list ul {
+ul.request-list,
+ul.request-list ul {
     margin-bottom: 0;
     padding-left: 0;
     list-style: none;
 }
-.request-list  li {
+ul.request-list {
+    margin-bottom: 20px;
+}
+.request-list li {
     position: relative;
     display: block;
 }

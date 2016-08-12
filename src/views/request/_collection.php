@@ -60,4 +60,15 @@ use yii\helpers\Url;
             </li>
         <?php endforeach; ?>
     </ul>
+
+    <div class="well">
+        <?php if ($items): ?>
+            <?= Html::a('Export Collection', ['collection/export'], [
+                'class' => 'btn btn-block btn-default',
+            ]) ?>
+        <?php endif; ?>
+        <?= Html::a('Import Collection', ['collection/import'], [
+            'class' => 'btn btn-block btn-default',
+        ]) ?>
+    </div>
 </div>

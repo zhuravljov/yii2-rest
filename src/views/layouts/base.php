@@ -34,34 +34,6 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
         echo $menu;
 
         echo Nav::widget([
-            'options' => ['class' => 'nav navbar-nav'],
-            'items' => [
-                [
-                    'label' => 'Actions',
-                    'items' => [
-                        [
-                            'label' => 'Export Collection',
-                            'url' => ['collection/export'],
-                        ],
-                        [
-                            'label' => 'Import Collection',
-                            'url' => ['collection/import'],
-                        ],
-                        '<li class="divider"></li>',
-                        [
-                            'label' => 'Clear History',
-                            'url' => ['history/clear'],
-                            'linkOptions' => [
-                                'data-method' => 'post',
-                                'data-confirm' => 'Are you sure?',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
-
-        echo Nav::widget([
             'options' => ['class' => 'nav navbar-nav navbar-right'],
             'items' => [
                 [
