@@ -87,11 +87,11 @@ $this->registerJs(<<<'JS'
 
 if (window.localStorage) {
     var restHistoryTab = localStorage['restHistoryTab'] || 'collection';
-    $('a[href=#' + restHistoryTab + ']').tab('show');
-    $('a[href=#collection]').on('shown.bs.tab', function() {
+    $('a[href="#' + restHistoryTab + '"]').tab('show');
+    $('a[href="#collection"]').on('shown.bs.tab', function() {
         localStorage['restHistoryTab'] = 'collection';
     });
-    $('a[href=#history]').on('shown.bs.tab', function() {
+    $('a[href="#history"]').on('shown.bs.tab', function() {
         localStorage['restHistoryTab'] = 'history';
     });
 }

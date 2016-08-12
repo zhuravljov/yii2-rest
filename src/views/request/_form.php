@@ -136,15 +136,15 @@ HTML
 $this->registerJs(<<<'JS'
 
 var inputSenderTab = $('#requestform-tab');
-$('a[href=#request-query]').on('shown.bs.tab', function() {
+$('a[href="#request-query"]').on('shown.bs.tab', function() {
     inputSenderTab.val(1);
     $('#request-query').find(':text').first().focus();
 });
-$('a[href=#request-body]').on('shown.bs.tab', function() {
+$('a[href="#request-body"]').on('shown.bs.tab', function() {
     inputSenderTab.val(2);
     $('#request-body').find(':text').first().focus();
 });
-$('a[href=#request-headers]').on('shown.bs.tab', function() {
+$('a[href="#request-headers"]').on('shown.bs.tab', function() {
     inputSenderTab.val(3);
     $('#request-headers').find(':text').first().focus();
 });

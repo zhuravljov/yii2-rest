@@ -70,7 +70,7 @@ use yii\web\Response;
                 }
                 /** @var \zhuravljov\yii\rest\formatters\RawFormatter $formatter */
                 $formatter = \Yii::createObject($formatterConfig);
-                echo $formatter->format($record, $this);
+                echo $formatter->format($record);
                 \zhuravljov\yii\rest\HighlightAsset::register($this);
                 $this->registerJs('hljs.highlightBlock(document.getElementById("response-content"));');
                 $this->registerCss('pre code.hljs {background: transparent}');
@@ -107,11 +107,11 @@ $this->registerJs(<<<JS
 
 if (window.localStorage) {
     var responseTab = localStorage['responseTab'] || 'response-body';
-    $('a[href=#' + responseTab + ']').tab('show');
-    $('a[href=#response-body]').on('shown.bs.tab', function() {
+    $('a[href="#' + responseTab + '"]').tab('show');
+    $('a[href="#response-body"]').on('shown.bs.tab', function() {
         localStorage['responseTab'] = 'response-body';
     });
-    $('a[href=#response-headers]').on('shown.bs.tab', function() {
+    $('a[href="#response-headers"]').on('shown.bs.tab', function() {
         localStorage['responseTab'] = 'response-headers';
     });
 }
