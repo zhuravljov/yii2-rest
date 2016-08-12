@@ -59,7 +59,7 @@ if ($model->method) {
             <div class="tab-content">
 
                 <div class="form-group has-feedback">
-                    <input id="history-search" type="text" class="form-control" placeholder="Search" />
+                    <input id="history-search" type="search" class="form-control" placeholder="Search" />
                     <span class="glyphicon glyphicon-search form-control-feedback"></span>
                 </div>
 

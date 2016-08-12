@@ -69,7 +69,7 @@ $('.params-list')
 function updateCounter(tab) {
     var paramsCount = tab.find('tr').length - 1;
     var tabId = tab.attr('id');
-    var counter = $('a[href=#' + tabId + '] > .counter');
+    var counter = $('a[href="#' + tabId + '"] > .counter');
     counter.text(paramsCount);
     if (paramsCount) {
         counter.removeClass('hidden');
