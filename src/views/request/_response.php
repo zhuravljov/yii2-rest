@@ -61,7 +61,7 @@ use yii\web\Response;
             <div id="response-body" class="tab-pane">
                 <?php
                 $contentType = !empty($record->headers['Content-Type']) ? $record->headers['Content-Type'][0] : '';
-                $formatterConfig = 'zhuravljov\yii\rest\formatters\RawFormatter';
+                $formatterConfig = \zhuravljov\yii\rest\formatters\RawFormatter::class;
                 foreach ($this->context->module->formatters as $mimeType => $config) {
                     if (strpos($contentType, $mimeType) === 0) {
                         $formatterConfig = $config;

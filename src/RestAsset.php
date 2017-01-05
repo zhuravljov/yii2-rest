@@ -18,8 +18,8 @@ class RestAsset extends AssetBundle
     public $js = [
     ];
     public $depends = [
-        'yii\web\YiiAsset',
-        'yii\bootstrap\BootstrapAsset',
-        'yii\bootstrap\BootstrapPluginAsset',
+        \yii\web\YiiAsset::class,
+        \yii\bootstrap\BootstrapAsset::class,
+        \yii\bootstrap\BootstrapPluginAsset::class,
     ];
 }
