@@ -17,7 +17,7 @@ class DbStorageTest extends StorageTestCase
 
     protected function tearDown()
     {
-        $this->getConnection()->pdo->exec('DROP TABLE IF EXISTS rest');
+        $this->getConnection()->pdo->exec('DROP TABLE IF EXISTS `rest`');
         parent::tearDown();
     }
 
@@ -54,21 +54,21 @@ class DbStorageTest extends StorageTestCase
         // Schema
 
         $db->pdo->exec('
-            CREATE TABLE IF NOT EXISTS rest (
-                id INT(11) NOT NULL AUTO_INCREMENT,
-                tag VARCHAR(24) NOT NULL,
-                module_id VARCHAR(64) NOT NULL,
-                request LONGBLOB NOT NULL,
-                response LONGBLOB NOT NULL,
-                method VARCHAR(8),
-                endpoint VARCHAR(128),
-                description LONGTEXT,
-                status VARCHAR(3),
-                stored_at INT(11) DEFAULT NULL,
-                favorited_at INT(11) DEFAULT NULL,
-                PRIMARY KEY (id),
-                UNIQUE KEY tag (tag, module_id),
-                KEY module_id (module_id)
+            CREATE TABLE IF NOT EXISTS `rest` (
+                `id` INT(11) NOT NULL AUTO_INCREMENT,
+                `tag` VARCHAR(24) NOT NULL,
+                `module_id` VARCHAR(64) NOT NULL,
+                `request` LONGBLOB NOT NULL,
+                `response` LONGBLOB NOT NULL,
+                `method` VARCHAR(8) DEFAULT NULL,
+                `endpoint` VARCHAR(128) DEFAULT NULL,
+                `description` TEXT,
+                `status` VARCHAR(3) DEFAULT NULL,
+                `stored_at` INT(11) DEFAULT NULL,
+                `favorited_at` INT(11) DEFAULT NULL,
+                PRIMARY KEY (`id`),
+                UNIQUE KEY `tag` (`tag`,`module_id`),
+                KEY `module_id` (`module_id`)
             );
         ');
 
