@@ -37,7 +37,7 @@ use zhuravljov\yii\rest\models\RequestForm;
                     'template' => <<<HTML
                         {label}
                         <div class="input-group">
-                            <div class="input-group-addon">$baseUrl</div>
+                            <div class="input-group-addon" title="$baseUrl">$baseUrl</div>
                             {input}
                             <span class="input-group-btn">
                                 <button class="btn btn-lg btn-primary" type="submit" tabindex="-1">Send</button>
@@ -154,7 +154,10 @@ JS
 $this->registerCss(<<<'CSS'
 
 .form-group-lg .input-group-addon {
-    font-size: 18px;
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 16px;
 }
 
 CSS

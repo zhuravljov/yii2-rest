@@ -11,9 +11,9 @@ $items = [];
 foreach (Yii::$app->getModules(true) as $module) {
     if ($module instanceof Module) {
         $items[] = [
-            'label' => $module->baseUrl,
+            'label' => $module->name,
             'url' => ['/' . $module->id],
-            'active' => $module === $this->context->module,
+            'active' => $module === Yii::$app->controller->module,
         ];
     }
 }

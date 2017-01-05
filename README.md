@@ -37,6 +37,7 @@ return [
     'modules' => [
         'rest-client' => [
             'class' => 'zhuravljov\yii\rest\Module',
+            'name' => 'My Rest Client',
             'baseUrl' => 'http://localhost/api/v1',
         ],
     ],

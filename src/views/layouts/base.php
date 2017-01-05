@@ -1,15 +1,21 @@
 <?php
-use yii\bootstrap\NavBar;
-use yii\bootstrap\Nav;
-use yii\helpers\Html;
-
 /**
  * @var \yii\web\View $this
  * @var string $menu
  * @var string $content
  */
 
-$asset = \zhuravljov\yii\rest\RestAsset::register($this);
+use yii\bootstrap\NavBar;
+use yii\bootstrap\Nav;
+use yii\helpers\Html;
+use zhuravljov\yii\rest\Module;
+use zhuravljov\yii\rest\RestAsset;
+
+$asset = RestAsset::register($this);
+
+/** @var Module $module */
+$module = Yii::$app->controller->module;
+$isRest = $module instanceof Module;
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -26,8 +32,8 @@ $asset = \zhuravljov\yii\rest\RestAsset::register($this);
     <div class="wrap">
         <?php
         NavBar::begin([
-            'brandLabel' => 'REST Client',
-            'brandUrl' => ['request/create'],
+            'brandLabel' => $isRest ? $module->name : 'REST Client',
+            'brandUrl' => $isRest ? ['request/create'] : '#',
             'options' => ['class' => 'navbar-inverse navbar-fixed-top'],
         ]);
 

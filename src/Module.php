@@ -47,6 +47,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $allowedIPs = ['127.0.0.1', '::1'];
     /**
+     * @var string
+     */
+    public $name;
+    /**
      * @var string base request URL.
      */
     public $baseUrl;
