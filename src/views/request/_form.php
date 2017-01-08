@@ -34,19 +34,7 @@ use zhuravljov\yii\rest\models\RequestForm;
             <div class="col-sm-10">
 
                 <?= $form->field($model, 'endpoint', [
-                    'template' => <<<HTML
-                        {label}
-                        <div class="input-group">
-                            <div class="input-group-addon" title="$baseUrl">$baseUrl</div>
-                            {input}
-                            <span class="input-group-btn">
-                                <button class="btn btn-lg btn-primary" type="submit" tabindex="-1">Send</button>
-                            </span>
-                        </div>
-                        {hint}
-                        {error}
-HTML
-                    ,
+                    'template' => $this->render('_form-endpoint', ['baseUrl' => $baseUrl]),
                     'options' => ['class' => 'form-group form-group-lg'],
                 ])->textInput([
                     'placeholder' => 'endpoint',
@@ -150,15 +138,4 @@ $('a[href="#request-headers"]').on('shown.bs.tab', function() {
 });
 
 JS
-);
-$this->registerCss(<<<'CSS'
-
-.form-group-lg .input-group-addon {
-    max-width: 400px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 16px;
-}
-
-CSS
 );
