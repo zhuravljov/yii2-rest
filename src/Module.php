@@ -51,10 +51,6 @@ class Module extends \yii\base\Module implements BootstrapInterface
      */
     public $name;
     /**
-     * @var string base request URL.
-     */
-    public $baseUrl;
-    /**
      * @var array http client object configuration.
      */
     public $clientConfig = \yii\httpclient\Client::class;
@@ -66,6 +62,10 @@ class Module extends \yii\base\Module implements BootstrapInterface
         'application/xml' => \zhuravljov\yii\rest\formatters\XmlFormatter::class,
         'text/html' => \zhuravljov\yii\rest\formatters\HtmlFormatter::class,
     ];
+    /**
+     * @var string base request URL.
+     */
+    private $_baseUrl;
     /**
      * @var \zhuravljov\yii\rest\storages\Storage|array|string
      */
@@ -158,5 +158,24 @@ class Module extends \yii\base\Module implements BootstrapInterface
         }
 
         return $this->_storage;
+    }
+
+    /**
+     * @param string $baseUrl
+     */
+    public function setBaseUrl($baseUrl)
+    {
+        $this->_baseUrl = $baseUrl;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        if (!preg_match('#(http|https|ftp):\/\/#', $this->_baseUrl)) {
+            $this->_baseUrl = Yii::$app->request->getHostInfo() . $this->_baseUrl;
+        }
+        return $this->_baseUrl;
     }
 }
