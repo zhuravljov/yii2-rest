@@ -4,7 +4,7 @@ namespace zhuravljov\yii\rest\storages;
 
 use Yii;
 use yii\base\InvalidParamException;
-use yii\base\Object;
+use yii\base\BaseObject;
 use zhuravljov\yii\rest\models\RequestForm;
 use zhuravljov\yii\rest\models\ResponseRecord;
 
@@ -15,7 +15,7 @@ use zhuravljov\yii\rest\models\ResponseRecord;
  *
  * @author Roman Zhuravlev <zhuravljov@gmail.com>
  */
-abstract class Storage extends Object
+abstract class Storage extends BaseObject
 {
     /**
      * @var \zhuravljov\yii\rest\Module
